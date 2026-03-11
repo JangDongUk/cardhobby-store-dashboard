@@ -415,14 +415,14 @@
   </div>
 
   <!-- SERIES (종목별) -->
-  <div class="section-header"><div class="section-title">종목별 매출</div></div>
+  <div class="section-header"><div class="section-title">시리즈별 매출</div></div>
   <div class="charts-grid-2">
     <div class="chart-card">
-      <div class="chart-title">종목별 매출 비중</div>
+      <div class="chart-title">시리즈별 주문 & 판매수량</div>
       <div class="chart-wrapper"><canvas id="seriesDonutChart"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">종목별 매출 순위</div>
+      <div class="chart-title">시리즈별 매출 순위</div>
       <div class="chart-wrapper"><canvas id="seriesBarChart"></canvas></div>
     </div>
   </div>
@@ -866,25 +866,46 @@ function renderSeriesCharts(product) {
   destroyChart('seriesDonut');
   destroyChart('seriesBar');
   const map = {};
-  product.forEach(r=>{ const s=r.series||'other'; map[s]=(map[s]||0)+parseSales(r.sales); });
-  const sorted = Object.entries(map).sort((a,b)=>b[1]-a[1]);
+  product.forEach(r=>{
+    const s = r.series||'other';
+    if (!map[s]) map[s] = {sales:0, orders:0, qty:0};
+    map[s].sales += parseSales(r.sales);
+    map[s].orders += parseInt(r.order_count)||0;
+    map[s].qty += parseInt(r.quantity)||0;
+  });
+  const sorted = Object.entries(map).sort((a,b)=>b[1].sales-a[1].sales);
   const labels = sorted.map(e=>e[0]);
-  const values = sorted.map(e=>e[1]);
   const colors = labels.map(l=>SERIES_COLORS[l]||'#888');
 
-  // 도넛
+  // 왼쪽: 주문수 & 판매수량 grouped bar
   const ctx1 = document.getElementById('seriesDonutChart').getContext('2d');
   charts.seriesDonut = new Chart(ctx1, {
-    type:'doughnut',
-    data:{ labels, datasets:[{data:values, backgroundColor:colors, borderWidth:2, borderColor:'#fff'}] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'bottom', labels:{font:{size:11}, padding:10, boxWidth:10}}, tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${fmtKRW(ctx.raw)}원`}} } }
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        { label:'주문수', data:sorted.map(e=>e[1].orders), backgroundColor:colors.map(c=>c+'99'), borderColor:colors, borderWidth:1.5, borderRadius:4 },
+        { label:'판매수량', data:sorted.map(e=>e[1].qty), backgroundColor:colors.map(c=>c+'33'), borderColor:colors, borderWidth:1.5, borderRadius:4, borderDash:[4,3] }
+      ]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{font:{size:11}, padding:10, boxWidth:10} },
+        tooltip:{ callbacks:{ label: ctx => ctx.dataset.label==='주문수' ? ` 주문수: ${ctx.raw}건` : ` 판매수량: ${ctx.raw}개` } }
+      },
+      scales:{ x:{grid:{color:gridColor()}, ticks:{font:{size:10}}}, y:{grid:{display:false}, ticks:{font:{size:11}}} }
+    }
   });
 
-  // 바
+  // 오른쪽: 매출 순위 바
+  const salesSorted = Object.entries(map).sort((a,b)=>b[1].sales-a[1].sales);
+  const sLabels = salesSorted.map(e=>e[0]);
+  const sColors = sLabels.map(l=>SERIES_COLORS[l]||'#888');
   const ctx2 = document.getElementById('seriesBarChart').getContext('2d');
   charts.seriesBar = new Chart(ctx2, {
     type:'bar',
-    data:{ labels, datasets:[{data:values, backgroundColor:colors, borderRadius:4, borderWidth:0}] },
+    data:{ labels:sLabels, datasets:[{data:salesSorted.map(e=>e[1].sales), backgroundColor:sColors, borderRadius:4, borderWidth:0}] },
     options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${fmtKRW(ctx.raw)}원`}}}, scales:{ x:{grid:{color:gridColor()}, ticks:{callback:v=>fmtKRW(v), font:{size:10}}}, y:{grid:{display:false}, ticks:{font:{size:11}}} } }
   });
 }
