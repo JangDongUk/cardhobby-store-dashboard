@@ -2,8 +2,6 @@
 
 스마트스토어 매출/마케팅 데이터를 시각화한 대시보드
 
-🔗 [대시보드 바로가기](https://jangdonguk.github.io/cardhobby-store-dashboard/dashboard.html)
-
 ## 기능
 
 - 일/주/월/년 기간별 매출 조회
