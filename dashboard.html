@@ -124,7 +124,7 @@
   .filters-bar {
     background: var(--bg2);
     border-bottom: 1px solid var(--border);
-    padding: 6px 28px;
+    padding: 8px 28px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -134,19 +134,20 @@
     z-index: 90;
     box-shadow: 0 1px 0 var(--border);
   }
-  .filter-label { font-size:11px; color:var(--muted); font-family:var(--font-body); font-weight:500; letter-spacing:0; }
+  .filter-label { font-size:12px; color:var(--text-sub); font-family:var(--font-body); font-weight:600; letter-spacing:0; }
   .period-tabs { display:flex; background:var(--bg3); border-radius:7px; padding:3px; gap:2px; border:1px solid var(--border); }
   .period-tab {
-    padding: 4px 12px;
+    padding: 5px 14px;
     border: none;
     background: transparent;
     color: var(--muted);
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     border-radius: 5px;
     transition: all 0.12s;
+    min-height: 30px;
   }
   .period-tab.active { background: var(--red); color: #fff; font-weight: 700; }
   .period-tab:hover:not(.active) { background: var(--red-pale2); color: var(--red); }
@@ -159,16 +160,16 @@
     background: var(--bg3);
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 4px 14px;
+    padding: 5px 16px;
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text);
-    font-weight: 600;
+    font-weight: 700;
     flex-wrap: wrap;
   }
   .date-range-display .range-icon { font-size: 12px; opacity: 0.7; }
   .range-days {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 400;
     color: var(--muted);
     margin-left: 2px;
@@ -490,31 +491,33 @@
   .quick-bar {
     background: var(--bg2);
     border-bottom: 1px solid var(--border);
-    padding: 5px 28px;
+    padding: 6px 28px;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     flex-wrap: wrap;
   }
   .quick-label {
-    font-size: 11px;
-    color: var(--muted);
+    font-size: 12px;
+    color: var(--text-sub);
     font-family: var(--font-body);
+    font-weight: 600;
     margin-right: 2px;
     white-space: nowrap;
   }
   .quick-btn {
-    padding: 3px 10px;
+    padding: 5px 12px;
     border: 1px solid var(--border);
     background: transparent;
-    color: var(--muted);
+    color: var(--text-sub);
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     border-radius: 20px;
     transition: all 0.12s;
     white-space: nowrap;
+    min-height: 28px;
   }
   .quick-btn:hover { background: var(--red-pale2); color: var(--red); border-color: var(--red-pale2); }
   .quick-btn.active { background: var(--red); color: #fff; border-color: var(--red); font-weight: 700; }
@@ -522,17 +525,18 @@
 
   /* 기간 필터 UX 개선 2단계: 이전/다음 기간 이동 버튼 */
   .nav-btn {
-    padding: 3px 10px;
+    padding: 5px 12px;
     border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-sub);
+    background: var(--bg3);
+    color: var(--text);
     font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
     border-radius: 5px;
     transition: all 0.12s;
     white-space: nowrap;
+    min-height: 28px;
   }
   .nav-btn:hover:not(:disabled) { background: var(--red-pale2); color: var(--red); border-color: var(--red-pale2); }
   .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -2213,7 +2217,7 @@ function renderKPI(daily) {
   const totalVisitors = curr.totalVisitors;
   const avgCvr = curr.cvr.toFixed(2);
 
-  document.getElementById('kpiSales').textContent    = fmtKRW(curr.totalSales)+'원';
+  document.getElementById('kpiSales').textContent    = curr.totalSales.toLocaleString()+'원';
   document.getElementById('kpiOrders').textContent   = curr.totalOrders+'건';
   document.getElementById('kpiVisitors').textContent = curr.totalVisitors.toLocaleString()+'명';
   document.getElementById('kpiCvr').textContent      = avgCvr+'%';
