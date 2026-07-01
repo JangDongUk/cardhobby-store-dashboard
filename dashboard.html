@@ -43,8 +43,6 @@
     --radius:    10px;
     --gap:       16px;
   }
-
-  /* UI 정리: 다크모드 변수 */
   body.dark {
     --bg:        #0f1117;
     --bg2:       #171923;
@@ -65,6 +63,172 @@
     --green:     #22c55e;
     --blue:      #60a5fa;
     --grid-color: #1e2132;
+  }
+
+  /* ── 메인 탭 구조 ── */
+  .main-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 12px 28px 0;
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+  }
+  .main-tab-btn {
+    padding: 9px 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-sub);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  .main-tab-btn:hover { color: var(--text); }
+  .main-tab-btn.active { color: var(--red); border-bottom-color: var(--red); font-weight: 700; }
+  .tab-panel { display: none; }
+
+  /* ── 신규 탭 공통 레이아웃 ── */
+  .ext-section { padding: 0 28px; margin-bottom: 24px; }
+  .ext-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--gap);
+    margin-bottom: 20px;
+  }
+  .ext-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    margin-bottom: 20px;
+  }
+  @media (max-width: 768px) {
+    .ext-charts-grid { grid-template-columns: 1fr; }
+    .main-tabs { padding: 12px 12px 0; }
+  }
+
+  /* ── 전체 요약 탭 전용 ── */
+  .summary-tab-header {
+    padding: 20px 28px 4px;
+  }
+  .summary-tab-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .summary-tab-desc {
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .summary-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    padding-left: 2px;
+  }
+  .summary-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+    margin-bottom: 8px;
+  }
+  @media (max-width: 900px) {
+    .summary-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 500px) {
+    .summary-kpi-grid { grid-template-columns: 1fr; }
+  }
+  .summary-kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--kc, var(--red));
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .summary-kpi-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .summary-kpi-sublabel {
+    font-size: 11px;
+    color: var(--text-sub);
+    margin-bottom: 8px;
+  }
+  .summary-kpi-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--font-mono);
+    line-height: 1.2;
+  }
+  .summary-kpi-empty {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .summary-insight-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin: 16px 0 20px;
+  }
+  .summary-insight-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-sub);
+    margin-bottom: 8px;
+  }
+  .summary-insight-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .summary-insight-list li {
+    font-size: 13px;
+    color: var(--text);
+    padding-left: 12px;
+    position: relative;
+  }
+  .summary-insight-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+  }
+  .summary-insight-list strong {
+    color: var(--red);
+  }
+  .chart-title-sub {
+    font-size: 11px;
+    color: var(--text-sub);
+    margin-bottom: 10px;
+    margin-top: -6px;
+  }
+  .summary-chart-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 180px;
+    font-size: 13px;
+    color: var(--muted);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -1370,6 +1534,16 @@
   </div>
 </div>
 
+<!-- 메인 탭 버튼 -->
+<div class="main-tabs">
+  <button class="main-tab-btn active" data-tab="tab-summary">🏠 전체 요약</button>
+  <button class="main-tab-btn" data-tab="tab-smartstore">📊 스마트스토어</button>
+  <button class="main-tab-btn" data-tab="tab-external">🏪 오프라인·유통</button>
+  <button class="main-tab-btn" data-tab="tab-topps">🃏 Topps 분석</button>
+</div>
+
+<!-- ══ 탭: 스마트스토어 ══ -->
+<div id="tab-smartstore" class="tab-panel" style="display:none;">
 <main>
 
   <!-- API BANNER -->
@@ -1636,13 +1810,150 @@
   </div>
 
 </main>
+</div><!-- /tab-smartstore -->
+
+<!-- ══ 탭: 전체 요약 ══ -->
+<div id="tab-summary" class="tab-panel" style="display:block;">
+  <main>
+    <!-- 탭 헤더 -->
+    <div class="summary-tab-header">
+      <div class="summary-tab-title">전체 요약</div>
+      <div class="summary-tab-desc">선택한 기간의 스마트스토어, 오프라인, 유통, 방송/페이앱 매출을 통합해 보여줍니다.</div>
+    </div>
+
+    <div class="ext-section">
+
+      <!-- 주요 매출 KPI -->
+      <div class="summary-group-label">주요 매출</div>
+      <div id="summaryKpiMain" class="summary-kpi-grid"></div>
+
+      <!-- 채널 세부 KPI -->
+      <div class="summary-group-label" style="margin-top:20px">채널 세부</div>
+      <div id="summaryKpiDetail" class="summary-kpi-grid"></div>
+
+      <!-- 인사이트 요약 박스 -->
+      <div class="summary-insight-box" id="summaryInsightBox"></div>
+
+      <!-- 차트 A+B: 2열 -->
+      <div class="ext-charts-grid" style="margin-top:20px">
+        <div class="chart-card">
+          <div class="chart-title">채널별 매출 비중</div>
+          <div class="chart-title-sub">스마트스토어 + 외부 전체</div>
+          <div style="height:280px;position:relative"><canvas id="summaryChannelChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">외부 매출 구성</div>
+          <div class="chart-title-sub">오프라인·유통·방송/페이앱</div>
+          <div style="height:280px;position:relative"><canvas id="summaryExtGroupChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- 차트 C: 풀 너비 -->
+      <div class="chart-card" style="margin-top:0">
+        <div class="chart-title">일자별 매출 추이</div>
+        <div class="chart-title-sub">스마트스토어 + 외부 매출</div>
+        <div style="height:300px;position:relative"><canvas id="summaryTrendChart"></canvas></div>
+      </div>
+
+    </div>
+  </main>
+</div><!-- /tab-summary -->
+
+<!-- ══ 탭: 오프라인·유통 ══ -->
+<div id="tab-external" class="tab-panel">
+  <main>
+    <div class="section-header"><div class="section-title">오프라인·유통 매출</div></div>
+    <div class="ext-section">
+      <div id="extKpiGrid" class="ext-kpi-grid"></div>
+      <div class="ext-charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">sales_group별 매출 비중</div>
+          <div class="chart-wrapper"><canvas id="extGroupChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">채널별 매출</div>
+          <div class="chart-wrapper"><canvas id="extChannelChart"></canvas></div>
+        </div>
+      </div>
+      <div class="ext-charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">상품 카테고리별 매출</div>
+          <div class="chart-wrapper"><canvas id="extCatChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">거래처별 매출 TOP 10</div>
+          <div class="chart-wrapper"><canvas id="extCustomerChart"></canvas></div>
+        </div>
+      </div>
+      <div class="ext-charts-grid">
+        <div class="table-card" style="margin:0">
+          <div class="table-header"><span class="chart-title" style="margin:0">외부 매출 상품 TOP 10</span></div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>#</th><th>상품명</th><th style="text-align:right">수량</th><th style="text-align:right">매출</th></tr></thead>
+              <tbody id="extItemTable"><tr><td colspan="4" class="empty-state">데이터 로딩 중...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-card" style="margin:0">
+          <div class="table-header"><span class="chart-title" style="margin:0">원본 시트별 매출 요약</span></div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>시트명</th><th style="text-align:right">매출</th></tr></thead>
+              <tbody id="extSheetTable"><tr><td colspan="2" class="empty-state">데이터 로딩 중...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div><!-- /tab-external -->
+
+<!-- ══ 탭: Topps 분석 ══ -->
+<div id="tab-topps" class="tab-panel">
+  <main>
+    <div class="section-header"><div class="section-title">Topps 분석</div></div>
+    <div class="ext-section">
+      <div id="toppsKpiGrid" class="ext-kpi-grid"></div>
+      <div class="ext-charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Topps vs Non-Topps 매출 비중</div>
+          <div class="chart-wrapper"><canvas id="toppsRatioChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">라이선스별 Topps 매출</div>
+          <div class="chart-wrapper"><canvas id="toppsLicChart"></canvas></div>
+        </div>
+      </div>
+      <div class="ext-charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">채널별 Topps 매출</div>
+          <div class="chart-wrapper"><canvas id="toppsChChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Topps 상품 TOP 10</div>
+          <div class="chart-wrapper"><canvas id="toppsItemChart"></canvas></div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><span class="chart-title" style="margin:0">Topps 상품별 매출 TOP 10</span></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>#</th><th>상품명</th><th>라이선스</th><th style="text-align:right">수량</th><th style="text-align:right">매출</th></tr></thead>
+            <tbody id="toppsItemTable"><tr><td colspan="5" class="empty-state">데이터 로딩 중...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div><!-- /tab-topps -->
 
 <script>
 const SHEET_ID = '1PHLQLeQYBLDSeIeZrztiPtF3LrT5dFlNmOrPBCixNAM';
 const SHEET_NAMES = { daily:'daily_summary', product:'product_daily', channel:'channel_daily', ad:'ad_daily' };
 
 let apiKey = localStorage.getItem('sheets_api_key') || 'API_KEY_HERE';
-let allData = { daily:[], product:[], channel:[], ad:[] };
+let allData = { daily:[], product:[], channel:[], ad:[], external:[], master:[] };
 let currentRange = { from:null, to:null };
 let charts = {};
 let currentPeriod = 'month';
@@ -1663,6 +1974,11 @@ Chart.defaults.borderColor = '#e0e0e0';
 Chart.defaults.font.family = "'Noto Sans KR', sans-serif";
 
 window.addEventListener('DOMContentLoaded', () => {
+  // 탭 버튼 이벤트 리스너 연결 (inline onclick 방식 대신 안전하게)
+  document.querySelectorAll('.main-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
   initTheme();
   updateApiStatus(apiKey && apiKey !== 'API_KEY_HERE'); // 1단계 UI 개선
   if (apiKey && apiKey !== 'API_KEY_HERE') {
@@ -1964,13 +2280,16 @@ async function loadData() {
   if (!apiKey || apiKey === 'API_KEY_HERE') { loadDemoData(); return; }
   showLoading(true);
   try {
-    const [daily, product, channel, ad] = await Promise.all([
+    const [daily, product, channel, ad, external, master] = await Promise.all([
       fetchSheet(SHEET_NAMES.daily), fetchSheet(SHEET_NAMES.product),
-      fetchSheet(SHEET_NAMES.channel), fetchSheet(SHEET_NAMES.ad)
+      fetchSheet(SHEET_NAMES.channel), fetchSheet(SHEET_NAMES.ad),
+      fetchSheet('external_sales'),
+      fetchProductMaster('product_master')
     ]);
-    allData = { daily, product, channel, ad };
+    allData = { daily, product, channel, ad, external, master };
     setDefaultDateRange(currentPeriod);
     renderAll();
+    renderSummaryTab(); // 전체 요약 탭 기본 렌더
     document.getElementById('lastUpdated').textContent = '업데이트: ' + new Date().toLocaleTimeString('ko-KR');
   } catch(e) {
     alert('데이터 로드 실패: ' + e.message);
@@ -2104,8 +2423,25 @@ function loadDemoData() {
     {date:'2026-03-03',device:'pc',cost:'495',clicks:'7',orders:'0',sales:'0',roas:'0'},
     {date:'2026-03-03',device:'mobile',cost:'1496',clicks:'27',orders:'0',sales:'0',roas:'0'},
   ];
+  allData.external = [
+    {date:'2026-02-10',transaction_id:'2026-02-OFFLINE-0001',sales_group:'D2C_OFFLINE',sales_channel:'offline_store',sales_type:'store',item:'25/26 Finest Basketball Hobby',quantity:'2',unit_cost:'585000',total_cost:'1170000',sales_amount:'1600000',customer:'',payment_method:'CARD',source_owner:'Memory',source_sheet:'판매현황',notes:''},
+    {date:'2026-02-10',transaction_id:'2026-02-OFFLINE-0002',sales_group:'D2C_OFFLINE',sales_channel:'offline_store',sales_type:'store',item:'2026 Topps premier league eco pack',quantity:'3',unit_cost:'9000',total_cost:'27000',sales_amount:'54000',customer:'',payment_method:'CARD',source_owner:'Memory',source_sheet:'판매현황',notes:''},
+    {date:'2026-02-15',transaction_id:'2026-02-BTOB-0001',sales_group:'B2B',sales_channel:'btob',sales_type:'direct_b2b',item:'WWE Chrome 2026 Value',quantity:'6',unit_cost:'495020',total_cost:'2970120',sales_amount:'4320000',customer:'제이에이치',payment_method:'transfer',source_owner:'Justin',source_sheet:'BTOB제이에이치',notes:''},
+    {date:'2026-02-20',transaction_id:'2026-02-BTOB-0002',sales_group:'B2B',sales_channel:'btob',sales_type:'direct_b2b',item:'Topps 25/26 UCC Chrome Hobby',quantity:'4',unit_cost:'400000',total_cost:'1600000',sales_amount:'2200000',customer:'레가르트',payment_method:'transfer',source_owner:'Justin',source_sheet:'BTOB레가르트',notes:''},
+    {date:'2026-03-05',transaction_id:'2026-03-OFFLINE-0001',sales_group:'D2C_OFFLINE',sales_channel:'cafe',sales_type:'cafe',item:'POKEMON JAPANESE SV8A TERASTAL-2nd',quantity:'1',unit_cost:'225000',total_cost:'225000',sales_amount:'310000',customer:'',payment_method:'CARD',source_owner:'Memory',source_sheet:'판매현황(카페)',notes:''},
+    {date:'2026-03-10',transaction_id:'2026-03-BTOB-0001',sales_group:'B2B',sales_channel:'btob',sales_type:'direct_b2b',item:'2026 Topps Chrome UFC Value CEE Box',quantity:'10',unit_cost:'150000',total_cost:'1500000',sales_amount:'2000000',customer:'스포츠999',payment_method:'transfer',source_owner:'Justin',source_sheet:'BTOB',notes:''},
+  ];
+  allData.master = [
+    {item:'25/26 Finest Basketball Hobby',normalized_item:'25/26 Finest Basketball Hobby',brand:'Topps',is_topps:'TRUE',license_category:'Basketball',product_category:'sports',unit_type:'box',notes:''},
+    {item:'2026 Topps premier league eco pack',normalized_item:'2026 Topps PL Eco Pack',brand:'Topps',is_topps:'TRUE',license_category:'Soccer',product_category:'sports',unit_type:'pack',notes:''},
+    {item:'WWE Chrome 2026 Value',normalized_item:'WWE Chrome 2026 Value',brand:'Topps',is_topps:'TRUE',license_category:'WWE',product_category:'sports',unit_type:'box',notes:''},
+    {item:'Topps 25/26 UCC Chrome Hobby',normalized_item:'Topps 25/26 UCC Chrome Hobby',brand:'Topps',is_topps:'TRUE',license_category:'Soccer',product_category:'sports',unit_type:'box',notes:''},
+    {item:'2026 Topps Chrome UFC Value CEE Box',normalized_item:'2026 Topps Chrome UFC Value',brand:'Topps',is_topps:'TRUE',license_category:'UFC',product_category:'sports',unit_type:'box',notes:''},
+    {item:'POKEMON JAPANESE SV8A TERASTAL-2nd',normalized_item:'Pokemon SV8A Terastal Festival 2nd',brand:'Pokemon',is_topps:'FALSE',license_category:'Pokemon',product_category:'tcg',unit_type:'box',notes:''},
+  ];
   setDefaultDateRange('month');
   renderAll();
+  renderSummaryTab(); // 전체 요약 탭 기본 렌더
   document.getElementById('lastUpdated').textContent = '샘플 데이터 (API 키 미설정)';
 }
 
@@ -2135,6 +2471,15 @@ function renderAll() {
   renderTrendMemo(daily); // 관련 운영 메모
   renderDecision(daily, product, channel, ad); // 의사결정 보조
   renderInsights(daily, product, channel, ad); // 3단계 인사이트
+
+  // 현재 활성 탭이 스마트스토어가 아니면 해당 탭도 재렌더
+  const activeTab = document.querySelector('.main-tab-btn.active');
+  if (activeTab) {
+    const tabId = activeTab.getAttribute('data-tab');
+    if (tabId === 'tab-summary') renderSummaryTab();
+    if (tabId === 'tab-external') renderExternalTab();
+    if (tabId === 'tab-topps') renderToppsTab();
+  }
 }
 
 function parseSales(v) { return parseInt(String(v||'').replace(/,/g,''))||0; }
@@ -3149,6 +3494,434 @@ function initTheme() {
 }
 
 function showLoading(show) { document.getElementById('loadingOverlay').classList.toggle('show', show); }
+
+/* =====================================================
+   탭 구조 추가 (2차 작업)
+   - switchTab(): 탭 전환
+   - loadData(): external_sales, product_master 추가
+   - renderSummaryTab(): 전체 요약 탭
+   - renderExternalTab(): 오프라인·유통 탭
+   - renderToppsTab(): Topps 분석 탭
+   ===================================================== */
+
+// ── 탭 전환 ──────────────────────────────────────────
+function switchTab(tabId) {
+  document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  const activeBtn = document.querySelector(`.main-tab-btn[data-tab="${tabId}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+  const activePanel = document.getElementById(tabId);
+  if (activePanel) activePanel.style.display = 'block';
+
+  if (tabId === 'tab-summary') renderSummaryTab();
+  if (tabId === 'tab-external') renderExternalTab();
+  if (tabId === 'tab-topps') renderToppsTab();
+  if (tabId === 'tab-smartstore') renderAll();
+}
+// inline onclick에서도 안전하게 접근 가능하도록 전역 등록
+window.switchTab = switchTab;
+
+// ── 숫자 파싱 헬퍼 ───────────────────────────────────
+function parseNum(v) { return parseFloat(String(v||'').replace(/,/g,'').replace(/[^0-9.-]/g,''))||0; }
+function parseBool(v) { return String(v).trim().toUpperCase() === 'TRUE'; }
+function fmtWon(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
+function fmtWonShort(n) {
+  if (n >= 100000000) return (n/100000000).toFixed(1) + '억원';
+  if (n >= 10000) return Math.round(n/10000) + '만원';
+  return n.toLocaleString() + '원';
+}
+
+// ── product_master용 fetchSheet (item 헤더 기준) ─────
+async function fetchProductMaster(sheetName) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${apiKey}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`시트 "${sheetName}" 로드 실패 (${res.status})`);
+  const data = await res.json();
+  const rows = data.values || [];
+  if (rows.length < 2) return [];
+  let headerRowIdx = -1, dataColStart = 0;
+  for (let i = 0; i < rows.length; i++) {
+    for (let j = 0; j < rows[i].length; j++) {
+      if (String(rows[i][j]).trim().toLowerCase() === 'item') { headerRowIdx = i; dataColStart = j; break; }
+    }
+    if (headerRowIdx >= 0) break;
+  }
+  if (headerRowIdx < 0) return [];
+  const headers = rows[headerRowIdx].slice(dataColStart);
+  const result = [];
+  for (let i = headerRowIdx+1; i < rows.length; i++) {
+    const row = rows[i].slice(dataColStart);
+    if (!String(row[0]||'').trim()) continue;
+    const obj = {};
+    headers.forEach((h,idx) => obj[h.trim()] = (row[idx]||'').trim());
+    result.push(obj);
+  }
+  return result;
+}
+
+// ── 기간 필터 (external_sales용) ────────────────────
+function filterExternal(data) {
+  if (!currentRange.from || !currentRange.to) return data;
+  return data.filter(r => r.date >= currentRange.from && r.date <= currentRange.to);
+}
+
+// ── Topps 매칭 헬퍼 ─────────────────────────────────
+function buildToppsMap(master) {
+  const map = {};
+  master.forEach(r => { if (r.item) map[r.item] = r; });
+  return map;
+}
+
+// ── 전체 요약 탭 렌더 ────────────────────────────────
+function renderSummaryTab() {
+  const daily = filterByRange(allData.daily);
+  const ext   = filterExternal(allData.external || []);
+  const master = allData.master || [];
+  const toppsMap = buildToppsMap(master);
+
+  // ── 계산 ────────────────────────────────────────────
+  const ssSales      = daily.reduce((s,r) => s + parseSales(r.sales), 0);
+  const extSales     = ext.reduce((s,r) => s + parseNum(r.sales_amount), 0);
+  const d2cOffline   = ext.filter(r=>r.sales_group==='D2C_OFFLINE').reduce((s,r)=>s+parseNum(r.sales_amount),0);
+  const d2cOnlineExt = ext.filter(r=>r.sales_group==='D2C_ONLINE').reduce((s,r)=>s+parseNum(r.sales_amount),0);
+  const d2cOnlineTotal = ssSales + d2cOnlineExt;
+  const b2b          = ext.filter(r=>r.sales_group==='B2B').reduce((s,r)=>s+parseNum(r.sales_amount),0);
+  const total        = ssSales + extSales;
+  const toppsSales   = ext.reduce((s,r) => {
+    const m = toppsMap[r.item];
+    return s + (m && parseBool(m.is_topps) ? parseNum(r.sales_amount) : 0);
+  }, 0);
+  // TODO: 스마트스토어 product_daily Topps 매칭 추가 필요 (brand='topps' 기준)
+
+  // ── KPI 헬퍼 ────────────────────────────────────────
+  function kpiCard(label, sub, val, color, noData) {
+    const display = noData
+      ? `<div class="summary-kpi-empty">${noData}</div>`
+      : `<div class="summary-kpi-value">${val}</div>`;
+    return `
+      <div class="summary-kpi-card" style="--kc:${color}">
+        <div class="summary-kpi-label">${label}</div>
+        <div class="summary-kpi-sublabel">${sub}</div>
+        ${display}
+      </div>`;
+  }
+
+  // ── 주요 매출 KPI 4개 ───────────────────────────────
+  document.getElementById('summaryKpiMain').innerHTML = [
+    kpiCard('총 매출',           '스마트스토어 + 외부',             fmtWon(total),       'var(--red)',  total===0 ? '데이터 없음' : null),
+    kpiCard('스마트스토어 매출', '네이버 스마트스토어',             fmtWon(ssSales),     'var(--blue)', ssSales===0 ? '데이터 없음' : null),
+    kpiCard('외부 매출',         '오프라인 + B2B + 방송/페이앱',   fmtWon(extSales),    '#1a9e5c',    extSales===0 ? '외부 매출 데이터가 없습니다' : null),
+    kpiCard('Topps 외부 매출',   'product_master 기준',            fmtWon(toppsSales),  '#c40000',    toppsSales===0 ? 'Topps 분류 매출 없음' : null),
+  ].join('');
+
+  // ── 채널 세부 KPI 4개 ───────────────────────────────
+  document.getElementById('summaryKpiDetail').innerHTML = [
+    kpiCard('D2C 오프라인 매출',   '오프라인 매장',           fmtWon(d2cOffline),     '#e65c00', d2cOffline===0   ? '데이터 없음' : null),
+    kpiCard('D2C 온라인 외부 매출','방송/페이앱',             fmtWon(d2cOnlineExt),   '#7b3fa0', d2cOnlineExt===0 ? '데이터 없음' : null),
+    kpiCard('B2B 매출',            'B2B 유통',                fmtWon(b2b),            '#b47800', b2b===0          ? '데이터 없음' : null),
+    kpiCard('D2C 온라인 총매출',   '스마트스토어 + 방송/페이앱', fmtWon(d2cOnlineTotal), '#374151', d2cOnlineTotal===0 ? '데이터 없음' : null),
+  ].join('');
+
+  // ── 인사이트 요약 박스 ──────────────────────────────
+  const insights = [];
+  if (total > 0) {
+    insights.push(`이번 기간 총 매출은 <strong>${fmtWon(total)}</strong>입니다.`);
+    if (ssSales > 0 && total > 0)
+      insights.push(`총 매출 중 스마트스토어 비중은 <strong>${(ssSales/total*100).toFixed(1)}%</strong>입니다.`);
+  } else {
+    insights.push('선택한 기간에 매출 데이터가 없습니다.');
+  }
+  if (extSales > 0) {
+    const maxCh = [
+      { label:'D2C 오프라인', val:d2cOffline },
+      { label:'D2C 온라인 외부', val:d2cOnlineExt },
+      { label:'B2B', val:b2b },
+    ].sort((a,b)=>b.val-a.val)[0];
+    insights.push(`외부 매출 중 가장 큰 채널은 <strong>${maxCh.label}</strong>입니다.`);
+  } else {
+    insights.push('외부 매출 데이터가 아직 없습니다.');
+  }
+  if (toppsSales > 0)
+    insights.push(`Topps 외부 매출은 <strong>${fmtWon(toppsSales)}</strong>입니다.`);
+  else
+    insights.push('Topps로 분류된 외부 매출이 없습니다.');
+
+  document.getElementById('summaryInsightBox').innerHTML = `
+    <div class="summary-insight-title">📋 이번 기간 매출 요약</div>
+    <ul class="summary-insight-list">
+      ${insights.map(t=>`<li>${t}</li>`).join('')}
+    </ul>`;
+
+  // ── 차트 A: 채널별 매출 비중 도넛 ──────────────────
+  destroyChart('summaryChannelChart');
+  if (total > 0) {
+    charts['summaryChannelChart'] = new Chart(
+      document.getElementById('summaryChannelChart').getContext('2d'), {
+      type:'doughnut',
+      data:{
+        labels:['스마트스토어','D2C 오프라인','D2C 온라인 외부','B2B'],
+        datasets:[{
+          data:[ssSales, d2cOffline, d2cOnlineExt, b2b],
+          backgroundColor:['#1d4ed8','#e65c00','#7b3fa0','#b47800'],
+          borderWidth:2
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, padding:10 } } }
+      }
+    });
+  } else {
+    document.getElementById('summaryChannelChart').parentElement.innerHTML =
+      '<div class="summary-chart-empty">선택한 기간에 데이터가 없습니다.</div>';
+  }
+
+  // ── 차트 B: 외부 매출 구성 도넛 ────────────────────
+  destroyChart('summaryExtGroupChart');
+  if (extSales > 0) {
+    charts['summaryExtGroupChart'] = new Chart(
+      document.getElementById('summaryExtGroupChart').getContext('2d'), {
+      type:'doughnut',
+      data:{
+        labels:['D2C 오프라인','D2C 온라인 외부','B2B'],
+        datasets:[{
+          data:[d2cOffline, d2cOnlineExt, b2b],
+          backgroundColor:['#e65c00','#7b3fa0','#b47800'],
+          borderWidth:2
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, padding:10 } } }
+      }
+    });
+  } else {
+    const el = document.getElementById('summaryExtGroupChart');
+    if (el) el.parentElement.innerHTML =
+      '<div class="summary-chart-empty">외부 매출 데이터가 없습니다.</div>';
+  }
+
+  // ── 차트 C: 일자별 매출 추이 ────────────────────────
+  destroyChart('summaryTrendChart');
+  const dateMap = {};
+  daily.forEach(r => {
+    const d = r.date.slice(0,10);
+    if (!dateMap[d]) dateMap[d] = {ss:0, ext:0};
+    dateMap[d].ss += parseSales(r.sales);
+  });
+  ext.forEach(r => {
+    const d = (r.date||'').slice(0,10);
+    if (d) { if (!dateMap[d]) dateMap[d]={ss:0,ext:0}; dateMap[d].ext += parseNum(r.sales_amount); }
+  });
+  const sortedDates = Object.keys(dateMap).sort();
+  if (sortedDates.length > 0) {
+    charts['summaryTrendChart'] = new Chart(
+      document.getElementById('summaryTrendChart').getContext('2d'), {
+      type:'bar',
+      data:{
+        labels: sortedDates.map(d=>d.slice(5).replace('-','/')),
+        datasets:[
+          { label:'스마트스토어', data:sortedDates.map(d=>dateMap[d].ss),  backgroundColor:'rgba(29,78,216,0.7)', stack:'s' },
+          { label:'외부 매출',    data:sortedDates.map(d=>dateMap[d].ext), backgroundColor:'rgba(26,158,92,0.7)',  stack:'s' },
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          x:{ stacked:true, ticks:{ maxRotation:45 } },
+          y:{ stacked:true, ticks:{ callback: v => fmtWonShort(v) } }
+        },
+        plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, padding:10 } } }
+      }
+    });
+  } else {
+    const el = document.getElementById('summaryTrendChart');
+    if (el) el.parentElement.innerHTML =
+      '<div class="summary-chart-empty">선택한 기간에 데이터가 없습니다.</div>';
+  }
+}
+
+// ── 오프라인·유통 탭 렌더 ────────────────────────────
+function renderExternalTab() {
+  const ext = filterExternal(allData.external || []);
+  const master = allData.master || [];
+  const toppsMap = buildToppsMap(master);
+
+  const totalExt = ext.reduce((s,r)=>s+parseNum(r.sales_amount),0);
+  const d2cOff = ext.filter(r=>r.sales_group==='D2C_OFFLINE').reduce((s,r)=>s+parseNum(r.sales_amount),0);
+  const d2cOn  = ext.filter(r=>r.sales_group==='D2C_ONLINE').reduce((s,r)=>s+parseNum(r.sales_amount),0);
+  const b2b    = ext.filter(r=>r.sales_group==='B2B').reduce((s,r)=>s+parseNum(r.sales_amount),0);
+  const txIds  = new Set(ext.map(r=>r.transaction_id).filter(Boolean));
+  const txCount= txIds.size || ext.length;
+  const avgAmt = txCount ? totalExt/txCount : 0;
+
+  const extKpis = [
+    {label:'외부 매출 총합', val:fmtWon(totalExt), color:'var(--red)'},
+    {label:'D2C 오프라인', val:fmtWon(d2cOff), color:'#e65c00'},
+    {label:'D2C 온라인(외부)', val:fmtWon(d2cOn), color:'#7b3fa0'},
+    {label:'B2B 매출', val:fmtWon(b2b), color:'#b47800'},
+    {label:'거래 건수', val:txCount+'건', color:'var(--blue)'},
+    {label:'평균 거래 금액', val:fmtWon(avgAmt), color:'#1a9e5c'},
+  ];
+  document.getElementById('extKpiGrid').innerHTML = extKpis.map(k=>`
+    <div class="kpi-card" style="--kpi-color:${k.color}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value" style="font-size:20px">${k.val}</div>
+    </div>`).join('');
+
+  // sales_group별 도넛
+  destroyChart('extGroupChart');
+  const groupMap = {};
+  ext.forEach(r=>{ groupMap[r.sales_group||'미분류']=(groupMap[r.sales_group||'미분류']||0)+parseNum(r.sales_amount); });
+  const ctx1 = document.getElementById('extGroupChart').getContext('2d');
+  charts['extGroupChart'] = new Chart(ctx1, {type:'doughnut',
+    data:{labels:Object.keys(groupMap),datasets:[{data:Object.values(groupMap),backgroundColor:['#e65c00','#7b3fa0','#b47800','#888'],borderWidth:2}]},
+    options:{responsive:true,plugins:{legend:{position:'bottom'}}}
+  });
+
+  // sales_channel별 바
+  destroyChart('extChannelChart');
+  const chMap = {};
+  ext.forEach(r=>{ chMap[r.sales_channel||'미분류']=(chMap[r.sales_channel||'미분류']||0)+parseNum(r.sales_amount); });
+  const chSorted = Object.entries(chMap).sort((a,b)=>b[1]-a[1]);
+  const ctx2 = document.getElementById('extChannelChart').getContext('2d');
+  charts['extChannelChart'] = new Chart(ctx2, {type:'bar',
+    data:{labels:chSorted.map(x=>x[0]),datasets:[{label:'매출',data:chSorted.map(x=>x[1]),backgroundColor:'rgba(29,78,216,0.7)'}]},
+    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
+  });
+
+  // product_category별 바 (product_master 매칭)
+  destroyChart('extCatChart');
+  const catMap = {};
+  ext.forEach(r=>{
+    const m = toppsMap[r.item];
+    const cat = (m && m.product_category) || '미분류';
+    catMap[cat]=(catMap[cat]||0)+parseNum(r.sales_amount);
+  });
+  const catSorted = Object.entries(catMap).sort((a,b)=>b[1]-a[1]);
+  const ctx3 = document.getElementById('extCatChart').getContext('2d');
+  charts['extCatChart'] = new Chart(ctx3, {type:'bar',
+    data:{labels:catSorted.map(x=>x[0]),datasets:[{label:'매출',data:catSorted.map(x=>x[1]),backgroundColor:'rgba(26,158,92,0.7)'}]},
+    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
+  });
+
+  // 거래처별 TOP 10
+  destroyChart('extCustomerChart');
+  const custMap = {};
+  ext.forEach(r=>{ const c=r.customer||'일반고객'; custMap[c]=(custMap[c]||0)+parseNum(r.sales_amount); });
+  const custSorted = Object.entries(custMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const ctx4 = document.getElementById('extCustomerChart').getContext('2d');
+  charts['extCustomerChart'] = new Chart(ctx4, {type:'bar',
+    data:{labels:custSorted.map(x=>x[0]),datasets:[{label:'매출',data:custSorted.map(x=>x[1]),backgroundColor:'rgba(180,120,0,0.7)'}]},
+    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
+  });
+
+  // 상품 TOP 10 테이블
+  const itemMap = {};
+  ext.forEach(r=>{
+    const it = r.item||'미분류';
+    if(!itemMap[it]) itemMap[it]={sales:0,qty:0};
+    itemMap[it].sales += parseNum(r.sales_amount);
+    itemMap[it].qty   += parseNum(r.quantity);
+  });
+  const itemSorted = Object.entries(itemMap).sort((a,b)=>b[1].sales-a[1].sales).slice(0,10);
+  document.getElementById('extItemTable').innerHTML = itemSorted.map((x,i)=>`
+    <tr><td>${i+1}</td><td style="max-width:260px;word-break:break-word">${x[0]}</td>
+    <td style="text-align:right">${x[1].qty.toLocaleString()}</td>
+    <td style="text-align:right">${fmtWon(x[1].sales)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty-state">데이터 없음</td></tr>';
+
+  // source_sheet별 요약 테이블
+  const sheetMap = {};
+  ext.forEach(r=>{ const s=r.source_sheet||'기타'; sheetMap[s]=(sheetMap[s]||0)+parseNum(r.sales_amount); });
+  document.getElementById('extSheetTable').innerHTML = Object.entries(sheetMap).sort((a,b)=>b[1]-a[1]).map(x=>`
+    <tr><td>${x[0]}</td><td style="text-align:right">${fmtWon(x[1])}</td></tr>`).join('') || '<tr><td colspan="2" class="empty-state">데이터 없음</td></tr>';
+}
+
+// ── Topps 분석 탭 렌더 ──────────────────────────────
+function renderToppsTab() {
+  const ext = filterExternal(allData.external || []);
+  const master = allData.master || [];
+  const toppsMap = buildToppsMap(master);
+
+  let toppsSales=0, nonToppsSales=0, toppsQty=0;
+  const licMap={}, toppsItems={}, chMap={};
+
+  ext.forEach(r=>{
+    const m = toppsMap[r.item];
+    const amt = parseNum(r.sales_amount);
+    const qty = parseNum(r.quantity);
+    const isT = m && parseBool(m.is_topps);
+    if (isT) {
+      toppsSales += amt; toppsQty += qty;
+      const lic = (m && m.license_category) || '기타';
+      licMap[lic] = (licMap[lic]||0)+amt;
+      const dispName = (m && m.normalized_item) || r.item;
+      if(!toppsItems[dispName]) toppsItems[dispName]={sales:0,qty:0,lic};
+      toppsItems[dispName].sales += amt;
+      toppsItems[dispName].qty   += qty;
+      const ch = r.sales_channel||'미분류';
+      chMap[ch]=(chMap[ch]||0)+amt;
+    } else {
+      nonToppsSales += amt;
+    }
+  });
+
+  const toppsKpis = [
+    {label:'Topps 외부 매출', val:fmtWon(toppsSales), color:'var(--red)'},
+    {label:'Non-Topps 외부 매출', val:fmtWon(nonToppsSales), color:'#888'},
+    {label:'Topps 매출 비중', val: toppsSales+nonToppsSales>0 ? (toppsSales/(toppsSales+nonToppsSales)*100).toFixed(1)+'%' : '—', color:'#b47800'},
+    {label:'Topps 판매 수량', val:toppsQty.toLocaleString()+'개', color:'var(--blue)'},
+  ];
+  document.getElementById('toppsKpiGrid').innerHTML = toppsKpis.map(k=>`
+    <div class="kpi-card" style="--kpi-color:${k.color}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value" style="font-size:20px">${k.val}</div>
+    </div>`).join('');
+
+  // Topps vs Non-Topps 도넛
+  destroyChart('toppsRatioChart');
+  charts['toppsRatioChart'] = new Chart(document.getElementById('toppsRatioChart').getContext('2d'), {
+    type:'doughnut',
+    data:{labels:['Topps','Non-Topps'],datasets:[{data:[toppsSales,nonToppsSales],backgroundColor:['#c40000','#d1d5db'],borderWidth:2}]},
+    options:{responsive:true,plugins:{legend:{position:'bottom'}}}
+  });
+
+  // license_category별 바
+  destroyChart('toppsLicChart');
+  const licSorted = Object.entries(licMap).sort((a,b)=>b[1]-a[1]);
+  charts['toppsLicChart'] = new Chart(document.getElementById('toppsLicChart').getContext('2d'), {
+    type:'bar',
+    data:{labels:licSorted.map(x=>x[0]),datasets:[{label:'매출',data:licSorted.map(x=>x[1]),backgroundColor:'rgba(196,0,0,0.7)'}]},
+    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
+  });
+
+  // Topps sales_channel별 바
+  destroyChart('toppsChChart');
+  const chSorted = Object.entries(chMap).sort((a,b)=>b[1]-a[1]);
+  charts['toppsChChart'] = new Chart(document.getElementById('toppsChChart').getContext('2d'), {
+    type:'bar',
+    data:{labels:chSorted.map(x=>x[0]),datasets:[{label:'매출',data:chSorted.map(x=>x[1]),backgroundColor:'rgba(180,120,0,0.7)'}]},
+    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
+  });
+
+  // Topps 상품 TOP 10 테이블
+  const toppsItemSorted = Object.entries(toppsItems).sort((a,b)=>b[1].sales-a[1].sales).slice(0,10);
+  document.getElementById('toppsItemTable').innerHTML = toppsItemSorted.map((x,i)=>`
+    <tr><td>${i+1}</td><td style="max-width:220px;word-break:break-word">${x[0]}</td>
+    <td>${x[1].lic||'—'}</td>
+    <td style="text-align:right">${x[1].qty.toLocaleString()}</td>
+    <td style="text-align:right">${fmtWon(x[1].sales)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty-state">데이터 없음</td></tr>';
+
+  // Topps 상품 TOP 10 바 차트
+  destroyChart('toppsItemChart');
+  const top10 = toppsItemSorted.slice(0,10);
+  charts['toppsItemChart'] = new Chart(document.getElementById('toppsItemChart').getContext('2d'), {
+    type:'bar',
+    data:{labels:top10.map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),datasets:[{label:'매출',data:top10.map(x=>x[1].sales),backgroundColor:'rgba(196,0,0,0.7)'}]},
+    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
+  });
+}
 </script>
+
 </body>
 </html>
