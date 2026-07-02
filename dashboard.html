@@ -268,15 +268,20 @@
     margin-bottom: 10px;
     margin-top: -6px;
   }
-  .summary-chart-empty {
-    display: flex;
+  /* ── 차트 빈 화면 오버레이 (canvas 보존) ── */
+  .chart-slot { position:relative; }
+  .chart-empty-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    min-height: 180px;
     font-size: 13px;
-    color: var(--muted);
+    color: var(--text-sub);
+    background: var(--card);
+    z-index: 2;
   }
+  .chart-empty-overlay.visible { display: flex; }
 
   /* ── 외부 매출 상품 TOP 10 테이블 전용 ── */
   .ext-item-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -1913,12 +1918,12 @@
         <div class="chart-card">
           <div class="chart-title">채널별 매출 비중</div>
           <div class="chart-title-sub">스마트스토어 + 외부 전체</div>
-          <div style="height:280px;position:relative"><canvas id="summaryChannelChart"></canvas></div>
+          <div class="chart-slot" style="height:280px;position:relative"><canvas id="summaryChannelChart"></canvas><div class="chart-empty-overlay" id="summaryChannelChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
         <div class="chart-card">
           <div class="chart-title">외부 매출 구성</div>
           <div class="chart-title-sub">오프라인·유통·방송/페이앱</div>
-          <div style="height:280px;position:relative"><canvas id="summaryExtGroupChart"></canvas></div>
+          <div class="chart-slot" style="height:280px;position:relative"><canvas id="summaryExtGroupChart"></canvas><div class="chart-empty-overlay" id="summaryExtGroupChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
       </div>
 
@@ -1926,7 +1931,7 @@
       <div class="chart-card" style="margin-top:0">
         <div class="chart-title">일자별 매출 추이</div>
         <div class="chart-title-sub">스마트스토어 + 외부 매출</div>
-        <div style="height:300px;position:relative"><canvas id="summaryTrendChart"></canvas></div>
+        <div class="chart-slot" style="height:300px;position:relative"><canvas id="summaryTrendChart"></canvas><div class="chart-empty-overlay" id="summaryTrendChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
       </div>
 
     </div>
@@ -1960,12 +1965,12 @@
         <div class="chart-card">
           <div class="chart-title">외부 매출 그룹 비중</div>
           <div class="chart-title-sub">B2B, 오프라인, 방송/페이앱 매출 비중</div>
-          <div style="height:280px;position:relative"><canvas id="extGroupChart"></canvas></div>
+          <div class="chart-slot" style="height:280px;position:relative"><canvas id="extGroupChart"></canvas><div class="chart-empty-overlay" id="extGroupChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
         <div class="chart-card">
           <div class="chart-title">외부 채널별 매출</div>
           <div class="chart-title-sub">B2B, 오프라인 매장, 와이스 방송, 카페, 페이앱 기준</div>
-          <div style="height:280px;position:relative"><canvas id="extChannelChart"></canvas></div>
+          <div class="chart-slot" style="height:280px;position:relative"><canvas id="extChannelChart"></canvas><div class="chart-empty-overlay" id="extChannelChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
       </div>
 
@@ -1974,12 +1979,12 @@
         <div class="chart-card">
           <div class="chart-title">상품군별 매출</div>
           <div class="chart-title-sub">스포츠, TCG, 카테고리, 용품 등 상품 분류 기준</div>
-          <div style="height:280px;position:relative"><canvas id="extCatChart"></canvas></div>
+          <div class="chart-slot" style="height:280px;position:relative"><canvas id="extCatChart"></canvas><div class="chart-empty-overlay" id="extCatChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
         <div class="chart-card">
           <div class="chart-title">거래처별 매출 TOP 10</div>
           <div class="chart-title-sub">B2B·방송·페이앱 거래처 기준</div>
-          <div style="height:280px;position:relative"><canvas id="extCustomerChart"></canvas></div>
+          <div class="chart-slot" style="height:280px;position:relative"><canvas id="extCustomerChart"></canvas><div class="chart-empty-overlay" id="extCustomerChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
       </div>
 
@@ -1987,7 +1992,7 @@
       <div class="chart-card" style="margin-bottom:20px">
         <div class="chart-title">일자별 외부 매출 추이</div>
         <div class="chart-title-sub">일자별 D2C 오프라인, D2C 온라인 외부, B2B 매출</div>
-        <div style="height:320px;position:relative"><canvas id="extTrendChart"></canvas></div>
+        <div class="chart-slot" style="height:320px;position:relative"><canvas id="extTrendChart"></canvas><div class="chart-empty-overlay" id="extTrendChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
       </div>
 
       <!-- 테이블 2열 -->
@@ -2052,12 +2057,12 @@
         <div class="chart-card">
           <div class="chart-title">Topps vs Non-Topps 외부 매출 비중</div>
           <div class="chart-title-sub">product_master.is_topps 기준</div>
-          <div style="height:240px;position:relative"><canvas id="toppsRatioChart"></canvas></div>
+          <div class="chart-slot" style="height:240px;position:relative"><canvas id="toppsRatioChart"></canvas><div class="chart-empty-overlay" id="toppsRatioChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
         <div class="chart-card">
           <div class="chart-title">Topps 채널별 매출</div>
           <div class="chart-title-sub">B2B, 오프라인 매장, 와이스 방송, 페이앱 기준</div>
-          <div style="height:240px;position:relative"><canvas id="toppsChChart"></canvas></div>
+          <div class="chart-slot" style="height:240px;position:relative"><canvas id="toppsChChart"></canvas><div class="chart-empty-overlay" id="toppsChChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
       </div>
 
@@ -2066,12 +2071,12 @@
         <div class="chart-card">
           <div class="chart-title">라이선스별 Topps 매출</div>
           <div class="chart-title-sub">license_category 기준 매출 순서</div>
-          <div style="height:300px;position:relative"><canvas id="toppsLicChart"></canvas></div>
+          <div class="chart-slot" style="height:300px;position:relative"><canvas id="toppsLicChart"></canvas><div class="chart-empty-overlay" id="toppsLicChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
         <div class="chart-card">
           <div class="chart-title">Topps 상품 매출 순위</div>
           <div class="chart-title-sub">sales_amount 기준 상위 10개 상품</div>
-          <div style="height:300px;position:relative"><canvas id="toppsItemChart"></canvas></div>
+          <div class="chart-slot" style="height:300px;position:relative"><canvas id="toppsItemChart"></canvas><div class="chart-empty-overlay" id="toppsItemChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
         </div>
       </div>
 
@@ -2670,6 +2675,14 @@ function fmtKRW(n) {
   return n.toLocaleString();
 }
 function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+// 차트 빈 화면 오버레이 토글 (canvas는 절대 지우지 않음)
+function showChartEmpty(id, show, msg) {
+  const overlay = document.getElementById(id + '_empty');
+  if (!overlay) return;
+  if (msg) overlay.textContent = msg;
+  overlay.classList.toggle('visible', !!show);
+}
 
 // [추가] 직전 기간 날짜 범위 계산
 function getPrevRange(from, to) {
@@ -3853,13 +3866,13 @@ function renderSummaryTab() {
       }
     });
   } else {
-    document.getElementById('summaryChannelChart').parentElement.innerHTML =
-      '<div class="summary-chart-empty">선택한 기간에 데이터가 없습니다.</div>';
+    showChartEmpty('summaryChannelChart', true);
   }
 
   // ── 차트 B: 외부 매출 구성 도넛 ────────────────────
   destroyChart('summaryExtGroupChart');
   if (extSales > 0) {
+    showChartEmpty('summaryExtGroupChart', false);
     charts['summaryExtGroupChart'] = new Chart(
       document.getElementById('summaryExtGroupChart').getContext('2d'), {
       type:'doughnut',
@@ -3877,9 +3890,7 @@ function renderSummaryTab() {
       }
     });
   } else {
-    const el = document.getElementById('summaryExtGroupChart');
-    if (el) el.parentElement.innerHTML =
-      '<div class="summary-chart-empty">외부 매출 데이터가 없습니다.</div>';
+    showChartEmpty('summaryExtGroupChart', true, '외부 매출 데이터가 없습니다.');
   }
 
   // ── 차트 C: 일자별 매출 추이 ────────────────────────
@@ -3896,6 +3907,7 @@ function renderSummaryTab() {
   });
   const sortedDates = Object.keys(dateMap).sort();
   if (sortedDates.length > 0) {
+    showChartEmpty('summaryTrendChart', false);
     charts['summaryTrendChart'] = new Chart(
       document.getElementById('summaryTrendChart').getContext('2d'), {
       type:'bar',
@@ -3916,9 +3928,7 @@ function renderSummaryTab() {
       }
     });
   } else {
-    const el = document.getElementById('summaryTrendChart');
-    if (el) el.parentElement.innerHTML =
-      '<div class="summary-chart-empty">선택한 기간에 데이터가 없습니다.</div>';
+    showChartEmpty('summaryTrendChart', true);
   }
 }
 
@@ -3945,26 +3955,22 @@ function renderExternalTab() {
   const b2bPct   = totalExt>0 ? (b2b/totalExt*100).toFixed(1)+'%' : '—';
 
   // ── 데이터 없음 처리 ────────────────────────────────
+  const EXT_CHARTS = ['extGroupChart','extChannelChart','extCatChart','extCustomerChart','extTrendChart'];
   if (totalExt === 0) {
-    ['extKpiMain','extKpiSub','extInsightBox'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.innerHTML = '';
-    });
+    ['extKpiMain','extKpiSub'].forEach(id => { const el=document.getElementById(id); if(el) el.innerHTML=''; });
     document.getElementById('extInsightBox').innerHTML = `
       <div class="summary-insight-title">📋 이번 기간 외부 매출 요약</div>
       <ul class="summary-insight-list">
         <li>선택한 기간에 외부 매출 데이터가 없습니다.</li>
         <li>기간을 변경하거나 external_sales 데이터를 확인해주세요.</li>
       </ul>`;
-    ['extGroupChart','extChannelChart','extCatChart','extCustomerChart','extTrendChart'].forEach(id => {
-      destroyChart(id);
-      const el = document.getElementById(id);
-      if (el) el.parentElement.innerHTML = '<div class="summary-chart-empty">선택한 기간에 데이터가 없습니다.</div>';
-    });
+    EXT_CHARTS.forEach(id => { destroyChart(id); showChartEmpty(id, true); });
     document.getElementById('extItemTable').innerHTML  = '<tr><td colspan="6" class="empty-state">데이터 없음</td></tr>';
     document.getElementById('extSheetTable').innerHTML = '<tr><td colspan="4" class="empty-state">데이터 없음</td></tr>';
     return;
   }
+  // 데이터 있으면 오버레이 숨기기
+  EXT_CHARTS.forEach(id => showChartEmpty(id, false));
 
   // ── KPI 카드 헬퍼 ───────────────────────────────────
   function extKpiCard(label, sub, val, color) {
@@ -4089,8 +4095,7 @@ function renderExternalTab() {
         scales:{ x:{ ticks:{ callback:v=>fmtWonShort(v) } } } }
     });
   } else {
-    document.getElementById('extCustomerChart').parentElement.innerHTML =
-      '<div class="summary-chart-empty">거래처 데이터가 없습니다.</div>';
+    showChartEmpty('extCustomerChart', true, '거래처 데이터가 없습니다.');
   }
 
   // ── 차트 E: 일자별 외부 매출 추이 stacked bar ──────
@@ -4123,8 +4128,7 @@ function renderExternalTab() {
       }
     });
   } else {
-    document.getElementById('extTrendChart').parentElement.innerHTML =
-      '<div class="summary-chart-empty">선택한 기간에 데이터가 없습니다.</div>';
+    showChartEmpty('extTrendChart', true);
   }
 
   // ── 테이블 A: 외부 매출 상품 TOP 10 ────────────────
@@ -4215,6 +4219,7 @@ function renderToppsTab() {
   const topLic      = licSorted.length > 0 ? licSorted[0][0] : '—';
 
   // ── 데이터 없음 처리 ────────────────────────────────
+  const TOPPS_CHARTS = ['toppsRatioChart','toppsChChart','toppsLicChart','toppsItemChart'];
   if (toppsSales === 0) {
     document.getElementById('toppsKpiGrid').innerHTML = '';
     document.getElementById('toppsInsightBox').innerHTML = `
@@ -4223,17 +4228,15 @@ function renderToppsTab() {
         <li>선택한 기간에 Topps 외부 매출 데이터가 없습니다.</li>
         <li>product_master의 is_topps 값을 확인하거나 기간을 변경해주세요.</li>
       </ul>`;
-    ['toppsRatioChart','toppsChChart','toppsLicChart','toppsItemChart'].forEach(id => {
-      destroyChart(id);
-      const el = document.getElementById(id);
-      if (el) el.parentElement.innerHTML = '<div class="summary-chart-empty">선택한 기간에 Topps 데이터가 없습니다.</div>';
-    });
+    TOPPS_CHARTS.forEach(id => { destroyChart(id); showChartEmpty(id, true); });
     document.getElementById('toppsItemTable').innerHTML = '<tr><td colspan="6" class="empty-state">데이터 없음</td></tr>';
     document.getElementById('toppsLicTable').innerHTML  = '<tr><td colspan="5" class="empty-state">데이터 없음</td></tr>';
     document.getElementById('toppsMatrixHead').innerHTML = '';
-    document.getElementById('toppsMatrixBody').innerHTML = '<tr><td colspan="6" class="empty-state">선택한 기간에 Topps 외부 매출 데이터가 없습니다.<br>product_master의 is_topps 값을 확인하거나 기간을 변경해주세요.</td></tr>';
+    document.getElementById('toppsMatrixBody').innerHTML = '<tr><td colspan="6" class="empty-state">선택한 기간에 Topps 외부 매출 데이터가 없습니다.</td></tr>';
     return;
   }
+  // 데이터 있으면 오버레이 숨기기
+  TOPPS_CHARTS.forEach(id => showChartEmpty(id, false));
 
   // ── KPI 헬퍼 ────────────────────────────────────────
   function toppsKpiCard(label, sub, val, color) {
