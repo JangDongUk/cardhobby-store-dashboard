@@ -68,14 +68,14 @@
   /* ── 메인 탭 구조 ── */
   .main-tabs {
     display: flex;
-    gap: 4px;
-    padding: 12px 28px 0;
+    gap: 2px;
+    padding: 0 28px;
     background: var(--bg2);
     border-bottom: 2px solid var(--border);
     overflow-x: auto;
   }
   .main-tab-btn {
-    padding: 9px 20px;
+    padding: 11px 20px;
     border: none;
     background: transparent;
     color: var(--text-sub);
@@ -86,11 +86,17 @@
     border-bottom: 3px solid transparent;
     margin-bottom: -2px;
     white-space: nowrap;
-    transition: color 0.15s;
+    transition: color 0.15s, background 0.15s;
+    border-radius: 6px 6px 0 0;
   }
-  .main-tab-btn:hover { color: var(--text); }
+  .main-tab-btn:hover { color: var(--text); background: var(--bg3); }
   .main-tab-btn:focus { outline: none; }
-  .main-tab-btn.active { color: var(--red); border-bottom-color: var(--red); font-weight: 700; }
+  .main-tab-btn.active {
+    color: var(--red);
+    border-bottom-color: var(--red);
+    font-weight: 700;
+    background: rgba(196,0,0,0.04);
+  }
   .tab-panel { display: none; }
 
   /* ── 신규 탭 공통 레이아웃 ── */
@@ -159,11 +165,14 @@
   }
   @media (max-width: 1100px) { .topps-kpi-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 600px)  { .topps-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  /* ── 전체 요약 탭 전용 ── */
   .summary-tab-header {
     padding: 20px 28px 4px;
+    max-width: 1340px;
+    margin: 0 auto;
   }
   .summary-tab-title {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--text);
     margin-bottom: 4px;
@@ -171,6 +180,7 @@
   .summary-tab-desc {
     font-size: 13px;
     color: var(--text-sub);
+    line-height: 1.6;
   }
   .summary-group-label {
     font-size: 11px;
@@ -181,18 +191,55 @@
     margin-bottom: 8px;
     padding-left: 2px;
   }
+  /* 섹션 헤더 */
+  .summary-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 16px 0 10px;
+  }
+  .summary-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .summary-section-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: var(--red);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .summary-section-desc {
+    font-size: 12px;
+    color: var(--text-sub);
+    padding-left: 9px;
+  }
+  /* 대표 KPI 행 */
+  .summary-kpi-hero {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+  }
+  @media (max-width: 900px) { .summary-kpi-hero { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 500px) { .summary-kpi-hero { grid-template-columns: 1fr; } }
+  /* 세부 KPI 행 */
   .summary-kpi-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: var(--gap);
     margin-bottom: 8px;
   }
-  @media (max-width: 900px) {
-    .summary-kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 500px) {
-    .summary-kpi-grid { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 1100px) { .summary-kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 900px) { .summary-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .summary-kpi-grid { grid-template-columns: 1fr; } }
+  /* 공통 KPI 카드 */
   .summary-kpi-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -210,7 +257,7 @@
   .summary-kpi-sublabel {
     font-size: 11px;
     color: var(--text-sub);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .summary-kpi-value {
     font-size: 20px;
@@ -218,25 +265,148 @@
     color: var(--text);
     font-family: var(--font-mono);
     line-height: 1.2;
+    white-space: nowrap;
   }
   .summary-kpi-empty {
     font-size: 12px;
     color: var(--muted);
     font-style: italic;
   }
-  .summary-insight-box {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--red);
+  /* 총매출 강조 카드 */
+  .summary-kpi-card--hero {
+    background: var(--card);
+    border: 1px solid rgba(196,0,0,0.2);
+    border-top: 4px solid var(--red);
     border-radius: var(--radius);
-    padding: 14px 18px;
-    margin: 16px 0 20px;
+    padding: 22px 22px 20px;
+    box-shadow: 0 2px 12px rgba(196,0,0,0.07);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
-  .summary-insight-title {
+  .summary-kpi-card--hero::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle at top right, rgba(196,0,0,0.06), transparent 70%);
+    pointer-events: none;
+  }
+  .summary-kpi-card--hero .summary-kpi-label {
     font-size: 12px;
     font-weight: 700;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .summary-kpi-card--hero .summary-kpi-sublabel {
+    font-size: 11px;
     color: var(--text-sub);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .summary-kpi-card--hero .summary-kpi-value {
+    font-size: 30px;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  /* hero 카드 내부 breakdown */
+  .hero-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .hero-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 7px 10px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 6px;
+    min-width: 130px;
+    flex-shrink: 0;
+  }
+  .hero-breakdown-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-sub);
+    white-space: nowrap;
+  }
+  .hero-breakdown-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .hero-breakdown-pct {
+    font-weight: 700;
+    color: var(--text);
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  /* summary pill */
+  .chart-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .chart-header-row .chart-title { margin-bottom: 0; }
+  .summary-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--text-sub);
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  /* KPI 숫자 letter-spacing 정리 */
+  .summary-kpi-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--font-mono);
+    line-height: 1.2;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+  /* Topps 카드 보조 텍스트 */
+  .kpi-badge-sub {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 11px;
+    color: var(--text-sub);
+    font-family: var(--font-body);
+  }
+  /* 인사이트 카드 */
+  .summary-insight-box {
+    background: rgba(196,0,0,0.025);
+    border: 1px solid rgba(196,0,0,0.12);
+    border-left: 4px solid var(--red);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin: 4px 0 0;
+  }
+  .summary-insight-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
   .summary-insight-list {
     list-style: none;
@@ -249,8 +419,9 @@
   .summary-insight-list li {
     font-size: 13px;
     color: var(--text);
-    padding-left: 12px;
+    padding-left: 14px;
     position: relative;
+    line-height: 1.4;
   }
   .summary-insight-list li::before {
     content: '•';
@@ -259,12 +430,16 @@
     color: var(--red);
     font-weight: 700;
   }
-  .summary-insight-list strong {
-    color: var(--red);
-  }
+  .summary-insight-list strong { color: var(--red); }
   .chart-title-sub {
     font-size: 11px;
     color: var(--text-sub);
+    margin-bottom: 8px;
+    margin-top: -4px;
+  }
+  .chart-caption {
+    font-size: 10px;
+    color: var(--muted, #9ca3af);
     margin-bottom: 10px;
     margin-top: -6px;
   }
@@ -1897,41 +2072,62 @@
     <!-- 탭 헤더 -->
     <div class="summary-tab-header">
       <div class="summary-tab-title">전체 요약</div>
-      <div class="summary-tab-desc">선택한 기간의 스마트스토어, 오프라인, 유통, 방송/페이앱 매출을 통합해 보여줍니다.</div>
+      <div class="summary-tab-desc">스마트스토어와 외부 매출을 통합해 카드하비 전체 매출 흐름을 확인합니다.</div>
     </div>
 
     <div class="ext-section">
 
-      <!-- 주요 매출 KPI -->
-      <div class="summary-group-label">주요 매출</div>
-      <div id="summaryKpiMain" class="summary-kpi-grid"></div>
+      <!-- 섹션 1: 핵심 매출 지표 -->
+      <div class="summary-section-header">
+        <div class="summary-section-title">핵심 매출 지표</div>
+        <div class="summary-section-desc">선택 기간의 전체 매출과 주요 채널별 매출입니다.</div>
+      </div>
 
-      <!-- 채널 세부 KPI -->
-      <div class="summary-group-label" style="margin-top:20px">채널 세부</div>
+      <!-- 대표 KPI: 총매출 강조 + 스마트스토어 + 외부 -->
+      <div id="summaryKpiHero" class="summary-kpi-hero"></div>
+
+      <!-- 세부 KPI: 채널 세부 4개 -->
       <div id="summaryKpiDetail" class="summary-kpi-grid"></div>
 
-      <!-- 인사이트 요약 박스 -->
+      <!-- 핵심 인사이트 박스 -->
       <div class="summary-insight-box" id="summaryInsightBox"></div>
 
-      <!-- 차트 A+B: 2열 -->
-      <div class="ext-charts-grid" style="margin-top:20px">
+      <!-- 섹션 2: 채널별 매출 구조 -->
+      <div class="summary-section-header">
+        <div class="summary-section-title">채널별 매출 구조</div>
+        <div class="summary-section-desc">스마트스토어, 오프라인, 외부 온라인, B2B의 매출 비중을 비교합니다.</div>
+      </div>
+
+      <div class="ext-charts-grid">
         <div class="chart-card">
-          <div class="chart-title">채널별 매출 비중</div>
-          <div class="chart-title-sub">스마트스토어 + 외부 전체</div>
-          <div class="chart-slot" style="height:280px;position:relative"><canvas id="summaryChannelChart"></canvas><div class="chart-empty-overlay" id="summaryChannelChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
+          <div class="chart-header-row">
+            <div class="chart-title">채널별 매출 비중</div>
+            <span class="summary-pill" id="summaryPillChannel">—</span>
+          </div>
+          <div class="chart-title-sub">스마트스토어 + 외부 전체 기준</div>
+          <div class="chart-slot" style="height:240px;position:relative"><canvas id="summaryChannelChart"></canvas><div class="chart-empty-overlay" id="summaryChannelChart_empty">선택한 기간에 표시할 데이터가 없습니다. 기간을 넓히거나 다른 탭을 확인해 주세요.</div></div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">외부 매출 구성</div>
-          <div class="chart-title-sub">오프라인·유통·방송/페이앱</div>
-          <div class="chart-slot" style="height:280px;position:relative"><canvas id="summaryExtGroupChart"></canvas><div class="chart-empty-overlay" id="summaryExtGroupChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
+          <div class="chart-header-row">
+            <div class="chart-title">외부 매출 구성</div>
+            <span class="summary-pill" id="summaryPillExtGroup">—</span>
+          </div>
+          <div class="chart-title-sub">오프라인·B2B·방송/페이앱 비중</div>
+          <div class="chart-slot" style="height:240px;position:relative"><canvas id="summaryExtGroupChart"></canvas><div class="chart-empty-overlay" id="summaryExtGroupChart_empty">선택한 기간에 표시할 데이터가 없습니다. 기간을 넓히거나 다른 탭을 확인해 주세요.</div></div>
         </div>
       </div>
 
-      <!-- 차트 C: 풀 너비 -->
-      <div class="chart-card" style="margin-top:0">
+      <!-- 섹션 3: 매출 추이 -->
+      <div class="summary-section-header">
+        <div class="summary-section-title">매출 추이</div>
+        <div class="summary-section-desc">선택 기간 동안의 스마트스토어와 외부 매출 흐름입니다.</div>
+      </div>
+
+      <div class="chart-card">
         <div class="chart-title">일자별 매출 추이</div>
-        <div class="chart-title-sub">스마트스토어 + 외부 매출</div>
-        <div class="chart-slot" style="height:300px;position:relative"><canvas id="summaryTrendChart"></canvas><div class="chart-empty-overlay" id="summaryTrendChart_empty">선택한 기간에 데이터가 없습니다.</div></div>
+        <div class="chart-title-sub">스마트스토어 + 외부 매출 합계 기준</div>
+        <div class="chart-caption">외부 매출: 오프라인, B2B, 방송/페이앱 포함</div>
+        <div class="chart-slot" style="height:300px;position:relative"><canvas id="summaryTrendChart"></canvas><div class="chart-empty-overlay" id="summaryTrendChart_empty">선택한 기간에 표시할 데이터가 없습니다. 기간을 넓히거나 다른 탭을 확인해 주세요.</div></div>
       </div>
 
     </div>
@@ -3800,20 +3996,58 @@ function renderSummaryTab() {
       </div>`;
   }
 
-  // ── 주요 매출 KPI 4개 ───────────────────────────────
-  document.getElementById('summaryKpiMain').innerHTML = [
-    kpiCard('총 매출',           '스마트스토어 + 외부',             fmtWon(total),       'var(--red)',  total===0 ? '데이터 없음' : null),
-    kpiCard('스마트스토어 매출', '네이버 스마트스토어',             fmtWon(ssSales),     'var(--blue)', ssSales===0 ? '데이터 없음' : null),
-    kpiCard('외부 매출',         '오프라인 + B2B + 방송/페이앱',   fmtWon(extSales),    '#1a9e5c',    extSales===0 ? '외부 매출 데이터가 없습니다' : null),
-    kpiCard('Topps 외부 매출',   'product_master 기준',            fmtWon(toppsSales),  '#c40000',    toppsSales===0 ? 'Topps 분류 매출 없음' : null),
-  ].join('');
+  // ── 대표 KPI: 총매출(hero) + breakdown + 스마트스토어 + 외부 ────
+  const ssPct  = total > 0 ? (ssSales/total*100).toFixed(1) : '0.0';
+  const extPct = total > 0 ? (extSales/total*100).toFixed(1) : '0.0';
+  const toppsPctOfExt = extSales > 0 ? (toppsSales/extSales*100).toFixed(1) : null;
 
-  // ── 채널 세부 KPI 4개 ───────────────────────────────
+  document.getElementById('summaryKpiHero').innerHTML = `
+    <div class="summary-kpi-card--hero">
+      <div class="summary-kpi-label">총 매출</div>
+      <div class="summary-kpi-sublabel">스마트스토어 + 외부</div>
+      <div class="hero-body">
+        <div class="summary-kpi-value">${total > 0 ? fmtWon(total) : '—'}</div>
+        ${total > 0 ? `
+        <div class="hero-breakdown">
+          <div class="hero-breakdown-row">
+            <span class="hero-breakdown-dot" style="background:#1d4ed8"></span>
+            <span>스마트스토어</span>
+            <span class="hero-breakdown-pct">${ssPct}%</span>
+          </div>
+          <div class="hero-breakdown-row">
+            <span class="hero-breakdown-dot" style="background:#1a9e5c"></span>
+            <span>외부 매출</span>
+            <span class="hero-breakdown-pct">${extPct}%</span>
+          </div>
+        </div>` : ''}
+      </div>
+    </div>
+    ${kpiCard('스마트스토어 매출', '네이버 스마트스토어', fmtWon(ssSales), 'var(--blue)', ssSales===0 ? '데이터 없음' : null)}
+    ${kpiCard('외부 매출', '오프라인 + B2B + 방송/페이앱', fmtWon(extSales), '#1a9e5c', extSales===0 ? '외부 매출 데이터가 없습니다' : null)}
+  `;
+
+  // ── 채널 세부 KPI 5개 ───────────────────────────────
+  // 비중 계산 헬퍼 (분모 0 안전 처리)
+  function pct(val, base) {
+    return base > 0 ? (val / base * 100).toFixed(1) + '%' : null;
+  }
+  function kpiCardWithSub(label, sub, val, color, badge) {
+    const badgeHtml = badge ? `<span class="kpi-badge-sub">${badge}</span>` : '';
+    return `
+      <div class="summary-kpi-card" style="--kc:${color}">
+        <div class="summary-kpi-label">${label}</div>
+        <div class="summary-kpi-sublabel">${sub}</div>
+        <div class="summary-kpi-value">${val}</div>
+        ${badgeHtml}
+      </div>`;
+  }
+
   document.getElementById('summaryKpiDetail').innerHTML = [
-    kpiCard('D2C 오프라인 매출',   '오프라인 매장',           fmtWon(d2cOffline),     '#e65c00', d2cOffline===0   ? '데이터 없음' : null),
-    kpiCard('D2C 온라인 외부 매출','방송/페이앱',             fmtWon(d2cOnlineExt),   '#7b3fa0', d2cOnlineExt===0 ? '데이터 없음' : null),
-    kpiCard('B2B 매출',            'B2B 유통',                fmtWon(b2b),            '#b47800', b2b===0          ? '데이터 없음' : null),
-    kpiCard('D2C 온라인 총매출',   '스마트스토어 + 방송/페이앱', fmtWon(d2cOnlineTotal), '#374151', d2cOnlineTotal===0 ? '데이터 없음' : null),
+    kpiCardWithSub('D2C 오프라인 매출',    '오프라인 매장/카페',          fmtWon(d2cOffline || 0),     '#e65c00', extSales > 0 ? `외부 매출의 ${pct(d2cOffline, extSales)}` : null),
+    kpiCardWithSub('D2C 온라인 외부 매출', '방송/페이앱',                 fmtWon(d2cOnlineExt || 0),   '#7b3fa0', extSales > 0 ? `외부 매출의 ${pct(d2cOnlineExt, extSales)}` : null),
+    kpiCardWithSub('B2B 매출',             'B2B 유통',                    fmtWon(b2b || 0),            '#b47800', extSales > 0 ? `외부 매출의 ${pct(b2b, extSales)}` : null),
+    kpiCardWithSub('D2C 온라인 총매출',    '스마트스토어 + 방송/페이앱',  fmtWon(d2cOnlineTotal || 0), '#374151', total > 0    ? `총 매출의 ${pct(d2cOnlineTotal, total)}` : null),
+    kpiCardWithSub('Topps 외부 매출',      'product_master 기준',         fmtWon(toppsSales || 0),     '#c40000', extSales > 0 ? `외부 매출의 ${pct(toppsSales, extSales)}` : null),
   ].join('');
 
   // ── 인사이트 요약 박스 ──────────────────────────────
@@ -3841,13 +4075,16 @@ function renderSummaryTab() {
     insights.push('Topps로 분류된 외부 매출이 없습니다.');
 
   document.getElementById('summaryInsightBox').innerHTML = `
-    <div class="summary-insight-title">📋 이번 기간 매출 요약</div>
+    <div class="summary-insight-title">이번 기간 핵심 인사이트</div>
     <ul class="summary-insight-list">
       ${insights.map(t=>`<li>${t}</li>`).join('')}
     </ul>`;
 
   // ── 차트 A: 채널별 매출 비중 도넛 ──────────────────
   destroyChart('summaryChannelChart');
+  // summary pill: 스마트스토어 비중
+  const pillA = document.getElementById('summaryPillChannel');
+  if (pillA) pillA.textContent = total > 0 ? `스마트스토어 ${ssPct}%` : '—';
   if (total > 0) {
     charts['summaryChannelChart'] = new Chart(
       document.getElementById('summaryChannelChart').getContext('2d'), {
@@ -3871,6 +4108,16 @@ function renderSummaryTab() {
 
   // ── 차트 B: 외부 매출 구성 도넛 ────────────────────
   destroyChart('summaryExtGroupChart');
+  // summary pill: 최대 채널
+  const pillB = document.getElementById('summaryPillExtGroup');
+  if (pillB && extSales > 0) {
+    const maxExtCh = [
+      {label:'D2C 오프라인', val:d2cOffline},
+      {label:'D2C 온라인 외부', val:d2cOnlineExt},
+      {label:'B2B', val:b2b},
+    ].sort((a,b)=>b.val-a.val)[0];
+    pillB.textContent = `최대 채널 ${maxExtCh.label}`;
+  } else if (pillB) { pillB.textContent = '—'; }
   if (extSales > 0) {
     showChartEmpty('summaryExtGroupChart', false);
     charts['summaryExtGroupChart'] = new Chart(
@@ -3921,7 +4168,7 @@ function renderSummaryTab() {
       options:{
         responsive:true, maintainAspectRatio:false,
         scales:{
-          x:{ stacked:true, ticks:{ maxRotation:45 } },
+          x:{ stacked:true, ticks:{ maxRotation:45, maxTicksLimit:20 } },
           y:{ stacked:true, ticks:{ callback: v => fmtWonShort(v) } }
         },
         plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, padding:10 } } }
