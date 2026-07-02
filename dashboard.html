@@ -112,7 +112,53 @@
     .main-tabs { padding: 12px 12px 0; }
   }
 
-  /* ── 전체 요약 탭 전용 ── */
+  /* ── Topps 매트릭스 테이블 ── */
+  .topps-matrix-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .topps-matrix-table th {
+    background: var(--bg3);
+    color: var(--text-sub);
+    font-weight: 600;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+  .topps-matrix-table td {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .topps-matrix-table tr:last-child td { border-bottom: none; }
+  .topps-matrix-table tr:hover td { background: var(--bg3); }
+  .topps-matrix-table .col-total {
+    background: rgba(196,0,0,0.04);
+    font-weight: 700;
+    border-left: 1px solid var(--border);
+  }
+
+  /* Topps 라이선스/상품 테이블 금액 nowrap */
+  #toppsItemTable td:last-child,
+  #toppsLicTable td:nth-child(4) { white-space: nowrap; }
+
+  /* ── Topps 탭 전용 ── */
+  .topps-scope-note {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-sub);
+    background: var(--bg3);
+    border-left: 3px solid #c40000;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .topps-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--gap);
+    margin-bottom: 8px;
+  }
+  @media (max-width: 1100px) { .topps-kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px)  { .topps-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
   .summary-tab-header {
     padding: 20px 28px 4px;
   }
@@ -1984,38 +2030,101 @@
 <!-- ══ 탭: Topps 분석 ══ -->
 <div id="tab-topps" class="tab-panel">
   <main>
-    <div class="section-header"><div class="section-title">Topps 분석</div></div>
+    <!-- 탭 헤더 -->
+    <div class="summary-tab-header">
+      <div class="summary-tab-title">Topps 분석</div>
+      <div class="summary-tab-desc">product_master 기준으로 Topps 제품의 외부 매출, 라이선스, 채널, 상품별 성과를 보여줍니다.</div>
+      <div class="topps-scope-note">⚠ 현재 Topps 분석은 external_sales 기준 외부 매출만 반영합니다.</div>
+    </div>
+
     <div class="ext-section">
-      <div id="toppsKpiGrid" class="ext-kpi-grid"></div>
-      <div class="ext-charts-grid">
+
+      <!-- KPI -->
+      <div class="summary-group-label">Topps 주요 지표</div>
+      <div id="toppsKpiGrid" class="topps-kpi-grid"></div>
+
+      <!-- 인사이트 박스 -->
+      <div class="summary-insight-box" id="toppsInsightBox"></div>
+
+      <!-- 차트 1행: 비중 + 채널 -->
+      <!-- 차트 1행: 비중(작게) + 채널 -->
+      <div class="ext-charts-grid" style="margin-top:20px">
         <div class="chart-card">
-          <div class="chart-title">Topps vs Non-Topps 매출 비중</div>
-          <div class="chart-wrapper"><canvas id="toppsRatioChart"></canvas></div>
+          <div class="chart-title">Topps vs Non-Topps 외부 매출 비중</div>
+          <div class="chart-title-sub">product_master.is_topps 기준</div>
+          <div style="height:240px;position:relative"><canvas id="toppsRatioChart"></canvas></div>
         </div>
+        <div class="chart-card">
+          <div class="chart-title">Topps 채널별 매출</div>
+          <div class="chart-title-sub">B2B, 오프라인 매장, 와이스 방송, 페이앱 기준</div>
+          <div style="height:240px;position:relative"><canvas id="toppsChChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- 차트 2행: 라이선스 + 상품 매출 순위 -->
+      <div class="ext-charts-grid">
         <div class="chart-card">
           <div class="chart-title">라이선스별 Topps 매출</div>
-          <div class="chart-wrapper"><canvas id="toppsLicChart"></canvas></div>
+          <div class="chart-title-sub">license_category 기준 매출 순서</div>
+          <div style="height:300px;position:relative"><canvas id="toppsLicChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Topps 상품 매출 순위</div>
+          <div class="chart-title-sub">sales_amount 기준 상위 10개 상품</div>
+          <div style="height:300px;position:relative"><canvas id="toppsItemChart"></canvas></div>
         </div>
       </div>
+
+      <!-- 테이블 2열: 상품별 상세 + 라이선스별 상세 -->
       <div class="ext-charts-grid">
-        <div class="chart-card">
-          <div class="chart-title">채널별 Topps 매출</div>
-          <div class="chart-wrapper"><canvas id="toppsChChart"></canvas></div>
+        <div class="table-card" style="margin:0">
+          <div class="table-header">
+            <span class="chart-title" style="margin:0">Topps 상품별 상세 매출</span>
+            <div class="chart-title-sub" style="margin-top:4px">normalized_item 우선 표시, 주요 채널 포함</div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="ext-item-table">
+              <colgroup>
+                <col style="width:5%">
+                <col style="width:38%">
+                <col style="width:14%">
+                <col style="width:15%">
+                <col style="width:8%">
+                <col style="width:20%">
+              </colgroup>
+              <thead><tr><th>#</th><th>상품명</th><th style="text-align:center">라이선스</th><th style="text-align:center">주요 채널</th><th style="text-align:right">수량</th><th style="text-align:right">매출</th></tr></thead>
+              <tbody id="toppsItemTable"><tr><td colspan="6" class="empty-state">데이터 로딩 중...</td></tr></tbody>
+            </table>
+          </div>
         </div>
-        <div class="chart-card">
-          <div class="chart-title">Topps 상품 TOP 10</div>
-          <div class="chart-wrapper"><canvas id="toppsItemChart"></canvas></div>
+        <div class="table-card" style="margin:0">
+          <div class="table-header">
+            <span class="chart-title" style="margin:0">Topps 라이선스별 상세 매출</span>
+            <div class="chart-title-sub" style="margin-top:4px">라이선스별 상품 수, 수량, 매출, 비중</div>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>라이선스</th><th style="text-align:right">상품 수</th><th style="text-align:right">수량</th><th style="text-align:right">매출</th><th style="text-align:right">비중</th></tr></thead>
+              <tbody id="toppsLicTable"><tr><td colspan="5" class="empty-state">데이터 로딩 중...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div class="table-card">
-        <div class="table-header"><span class="chart-title" style="margin:0">Topps 상품별 매출 TOP 10</span></div>
+
+      <!-- 채널 × 라이선스 매트릭스 (풀 너비) -->
+      <div class="table-card" style="margin-top:0">
+        <div class="table-header">
+          <span class="chart-title" style="margin:0">Topps 채널 × 라이선스 매출 매트릭스</span>
+          <div class="chart-title-sub" style="margin-top:4px">라이선스별로 어떤 채널에서 매출이 발생했는지 한눈에 확인합니다.</div>
+        </div>
         <div style="overflow-x:auto">
-          <table>
-            <thead><tr><th>#</th><th>상품명</th><th>라이선스</th><th style="text-align:right">수량</th><th style="text-align:right">매출</th></tr></thead>
-            <tbody id="toppsItemTable"><tr><td colspan="5" class="empty-state">데이터 로딩 중...</td></tr></tbody>
+          <table class="topps-matrix-table">
+            <thead id="toppsMatrixHead"></thead>
+            <tbody id="toppsMatrixBody"><tr><td colspan="6" class="empty-state">데이터 로딩 중...</td></tr></tbody>
           </table>
         </div>
       </div>
+
     </div>
   </main>
 </div><!-- /tab-topps -->
@@ -4065,87 +4174,226 @@ function renderExternalTab() {
 
 // ── Topps 분석 탭 렌더 ──────────────────────────────
 function renderToppsTab() {
-  const ext = filterExternal(allData.external || []);
-  const master = allData.master || [];
+  const ext     = filterExternal(allData.external || []);
+  const master  = allData.master || [];
   const toppsMap = buildToppsMap(master);
+  const chLabel  = { offline_store:'오프라인 매장', cafe:'카페', btob:'B2B', wise_broadcast:'와이스 방송', payapp:'페이앱' };
 
+  // ── 계산 ────────────────────────────────────────────
   let toppsSales=0, nonToppsSales=0, toppsQty=0;
-  const licMap={}, toppsItems={}, chMap={};
+  const licMap={}, licItems={}, licQty={}, toppsItems={}, chMap={}, toppsItemSet=new Set();
 
   ext.forEach(r=>{
-    const m = toppsMap[r.item];
+    const m   = toppsMap[r.item];
     const amt = parseNum(r.sales_amount);
     const qty = parseNum(r.quantity);
     const isT = m && parseBool(m.is_topps);
     if (isT) {
       toppsSales += amt; toppsQty += qty;
-      const lic = (m && m.license_category) || '기타';
-      licMap[lic] = (licMap[lic]||0)+amt;
-      const dispName = (m && m.normalized_item) || r.item;
-      if(!toppsItems[dispName]) toppsItems[dispName]={sales:0,qty:0,lic};
+      toppsItemSet.add(r.item);
+      const lic      = (m.license_category) || '미분류';
+      licMap[lic]    = (licMap[lic]||0) + amt;
+      licQty[lic]    = (licQty[lic]||0) + qty;
+      licItems[lic]  = licItems[lic] || new Set();
+      licItems[lic].add(r.item);
+      const dispName = m.normalized_item || r.item;
+      if (!toppsItems[dispName]) toppsItems[dispName] = { sales:0, qty:0, lic, channels:{} };
       toppsItems[dispName].sales += amt;
       toppsItems[dispName].qty   += qty;
-      const ch = r.sales_channel||'미분류';
-      chMap[ch]=(chMap[ch]||0)+amt;
+      const ch = r.sales_channel || '미분류';
+      toppsItems[dispName].channels[ch] = (toppsItems[dispName].channels[ch]||0) + amt;
+      chMap[ch] = (chMap[ch]||0) + amt;
     } else {
       nonToppsSales += amt;
     }
   });
 
-  const toppsKpis = [
-    {label:'Topps 외부 매출', val:fmtWon(toppsSales), color:'var(--red)'},
-    {label:'Non-Topps 외부 매출', val:fmtWon(nonToppsSales), color:'#888'},
-    {label:'Topps 매출 비중', val: toppsSales+nonToppsSales>0 ? (toppsSales/(toppsSales+nonToppsSales)*100).toFixed(1)+'%' : '—', color:'#b47800'},
-    {label:'Topps 판매 수량', val:toppsQty.toLocaleString()+'개', color:'var(--blue)'},
-  ];
-  document.getElementById('toppsKpiGrid').innerHTML = toppsKpis.map(k=>`
-    <div class="kpi-card" style="--kpi-color:${k.color}">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value" style="font-size:20px">${k.val}</div>
-    </div>`).join('');
+  const extTotal    = toppsSales + nonToppsSales;
+  const toppsPct    = extTotal > 0 ? (toppsSales/extTotal*100).toFixed(1)+'%' : '—';
+  const toppsCount  = toppsItemSet.size;
+  const licSorted   = Object.entries(licMap).sort((a,b)=>b[1]-a[1]);
+  const topLic      = licSorted.length > 0 ? licSorted[0][0] : '—';
 
-  // Topps vs Non-Topps 도넛
+  // ── 데이터 없음 처리 ────────────────────────────────
+  if (toppsSales === 0) {
+    document.getElementById('toppsKpiGrid').innerHTML = '';
+    document.getElementById('toppsInsightBox').innerHTML = `
+      <div class="summary-insight-title">📋 이번 기간 Topps 요약</div>
+      <ul class="summary-insight-list">
+        <li>선택한 기간에 Topps 외부 매출 데이터가 없습니다.</li>
+        <li>product_master의 is_topps 값을 확인하거나 기간을 변경해주세요.</li>
+      </ul>`;
+    ['toppsRatioChart','toppsChChart','toppsLicChart','toppsItemChart'].forEach(id => {
+      destroyChart(id);
+      const el = document.getElementById(id);
+      if (el) el.parentElement.innerHTML = '<div class="summary-chart-empty">선택한 기간에 Topps 데이터가 없습니다.</div>';
+    });
+    document.getElementById('toppsItemTable').innerHTML = '<tr><td colspan="6" class="empty-state">데이터 없음</td></tr>';
+    document.getElementById('toppsLicTable').innerHTML  = '<tr><td colspan="5" class="empty-state">데이터 없음</td></tr>';
+    document.getElementById('toppsMatrixHead').innerHTML = '';
+    document.getElementById('toppsMatrixBody').innerHTML = '<tr><td colspan="6" class="empty-state">선택한 기간에 Topps 외부 매출 데이터가 없습니다.<br>product_master의 is_topps 값을 확인하거나 기간을 변경해주세요.</td></tr>';
+    return;
+  }
+
+  // ── KPI 헬퍼 ────────────────────────────────────────
+  function toppsKpiCard(label, sub, val, color) {
+    return `<div class="summary-kpi-card" style="--kc:${color}">
+      <div class="summary-kpi-label">${label}</div>
+      <div class="summary-kpi-sublabel">${sub}</div>
+      <div class="summary-kpi-value">${val}</div>
+    </div>`;
+  }
+
+  // ── KPI 6개 ─────────────────────────────────────────
+  document.getElementById('toppsKpiGrid').innerHTML = [
+    toppsKpiCard('Topps 외부 매출',      'product_master 기준',        fmtWon(toppsSales),    '#c40000'),
+    toppsKpiCard('Non-Topps 외부 매출',  'Topps 제외 외부 매출',       fmtWon(nonToppsSales), '#888888'),
+    toppsKpiCard('Topps 외부 매출 비중', '외부 매출 대비',             toppsPct,              '#b47800'),
+    toppsKpiCard('Topps 판매 수량',      'quantity 합계',              toppsQty.toLocaleString()+'개', 'var(--blue)'),
+    toppsKpiCard('Topps 상품 수',        'unique item 기준',           toppsCount+'종',       '#1a9e5c'),
+    toppsKpiCard('Top 라이선스',         '매출 1위 license_category',  topLic,                '#c40000'),
+  ].join('');
+
+  // ── 인사이트 박스 ───────────────────────────────────
+  const insights = [];
+  insights.push(`외부 매출 중 Topps 매출은 <strong>${fmtWon(toppsSales)}</strong>입니다.`);
+  insights.push(`Topps 외부 매출 비중은 <strong>${toppsPct}</strong>입니다.`);
+  if (topLic !== '—') insights.push(`가장 큰 Topps 라이선스는 <strong>${topLic}</strong>입니다.`);
+  const topCh = Object.entries(chMap).sort((a,b)=>b[1]-a[1])[0];
+  if (topCh) insights.push(`Topps 매출이 가장 큰 채널은 <strong>${chLabel[topCh[0]]||topCh[0]}</strong>입니다.`);
+  const topItem = Object.entries(toppsItems).sort((a,b)=>b[1].sales-a[1].sales)[0];
+  if (topItem) insights.push(`가장 높은 매출 상품은 <strong>${topItem[0]}</strong>입니다.`);
+
+  document.getElementById('toppsInsightBox').innerHTML = `
+    <div class="summary-insight-title">📋 이번 기간 Topps 요약</div>
+    <ul class="summary-insight-list">${insights.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+
+  // ── 차트 A: Topps vs Non-Topps 도넛 ────────────────
   destroyChart('toppsRatioChart');
   charts['toppsRatioChart'] = new Chart(document.getElementById('toppsRatioChart').getContext('2d'), {
     type:'doughnut',
-    data:{labels:['Topps','Non-Topps'],datasets:[{data:[toppsSales,nonToppsSales],backgroundColor:['#c40000','#d1d5db'],borderWidth:2}]},
-    options:{responsive:true,plugins:{legend:{position:'bottom'}}}
+    data:{ labels:['Topps','Non-Topps'], datasets:[{ data:[toppsSales,nonToppsSales], backgroundColor:['#c40000','#d1d5db'], borderWidth:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, padding:10 } } } }
   });
 
-  // license_category별 바
-  destroyChart('toppsLicChart');
-  const licSorted = Object.entries(licMap).sort((a,b)=>b[1]-a[1]);
-  charts['toppsLicChart'] = new Chart(document.getElementById('toppsLicChart').getContext('2d'), {
-    type:'bar',
-    data:{labels:licSorted.map(x=>x[0]),datasets:[{label:'매출',data:licSorted.map(x=>x[1]),backgroundColor:'rgba(196,0,0,0.7)'}]},
-    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
-  });
-
-  // Topps sales_channel별 바
+  // ── 차트 B: Topps 채널별 매출 ────────────────────────
   destroyChart('toppsChChart');
   const chSorted = Object.entries(chMap).sort((a,b)=>b[1]-a[1]);
+  const chColors = { btob:'rgba(180,120,0,0.75)', offline_store:'rgba(230,92,0,0.75)', wise_broadcast:'rgba(123,63,160,0.75)', payapp:'rgba(150,100,180,0.75)', cafe:'rgba(230,92,0,0.5)' };
   charts['toppsChChart'] = new Chart(document.getElementById('toppsChChart').getContext('2d'), {
     type:'bar',
-    data:{labels:chSorted.map(x=>x[0]),datasets:[{label:'매출',data:chSorted.map(x=>x[1]),backgroundColor:'rgba(180,120,0,0.7)'}]},
-    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
+    data:{ labels:chSorted.map(x=>chLabel[x[0]]||x[0]), datasets:[{ label:'매출', data:chSorted.map(x=>x[1]), backgroundColor:chSorted.map(x=>chColors[x[0]]||'rgba(196,0,0,0.6)') }] },
+    options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{ legend:{ display:false } },
+      scales:{ x:{ ticks:{ callback:v=>fmtWonShort(v) } } } }
   });
 
-  // Topps 상품 TOP 10 테이블
-  const toppsItemSorted = Object.entries(toppsItems).sort((a,b)=>b[1].sales-a[1].sales).slice(0,10);
-  document.getElementById('toppsItemTable').innerHTML = toppsItemSorted.map((x,i)=>`
-    <tr><td>${i+1}</td><td style="max-width:220px;word-break:break-word">${x[0]}</td>
-    <td>${x[1].lic||'—'}</td>
-    <td style="text-align:right">${x[1].qty.toLocaleString()}</td>
-    <td style="text-align:right">${fmtWon(x[1].sales)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty-state">데이터 없음</td></tr>';
+  // ── 차트 C: 라이선스별 Topps 매출 ──────────────────
+  destroyChart('toppsLicChart');
+  charts['toppsLicChart'] = new Chart(document.getElementById('toppsLicChart').getContext('2d'), {
+    type:'bar',
+    data:{ labels:licSorted.map(x=>x[0]), datasets:[{ label:'매출', data:licSorted.map(x=>x[1]), backgroundColor:'rgba(196,0,0,0.7)' }] },
+    options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{ legend:{ display:false } },
+      scales:{ x:{ ticks:{ callback:v=>fmtWonShort(v) } } } }
+  });
 
-  // Topps 상품 TOP 10 바 차트
+  // ── 차트 D: Topps 상품 TOP 10 바 ────────────────────
   destroyChart('toppsItemChart');
-  const top10 = toppsItemSorted.slice(0,10);
+  const itemSorted = Object.entries(toppsItems).sort((a,b)=>b[1].sales-a[1].sales).slice(0,10);
   charts['toppsItemChart'] = new Chart(document.getElementById('toppsItemChart').getContext('2d'), {
     type:'bar',
-    data:{labels:top10.map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),datasets:[{label:'매출',data:top10.map(x=>x[1].sales),backgroundColor:'rgba(196,0,0,0.7)'}]},
-    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmtWonShort(v)}}}}
+    data:{ labels:itemSorted.map(x=>x[0].length>22?x[0].slice(0,22)+'…':x[0]), datasets:[{ label:'매출', data:itemSorted.map(x=>x[1].sales), backgroundColor:'rgba(196,0,0,0.7)' }] },
+    options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{ legend:{ display:false } },
+      scales:{ x:{ ticks:{ callback:v=>fmtWonShort(v) } } } }
   });
+
+  // ── 테이블 A: Topps 상품별 TOP 10 ───────────────────
+  document.getElementById('toppsItemTable').innerHTML = itemSorted.length ? itemSorted.map((x,i)=>{
+    const topCh = Object.entries(x[1].channels).sort((a,b)=>b[1]-a[1])[0];
+    const chDisp = topCh ? (chLabel[topCh[0]]||topCh[0]) : '—';
+    return `<tr>
+      <td>${i+1}</td>
+      <td><div class="ext-item-name">${x[0]}</div></td>
+      <td style="text-align:center"><span class="ext-item-badge">${x[1].lic||'미분류'}</span></td>
+      <td style="text-align:center"><span class="ext-item-badge">${chDisp}</span></td>
+      <td style="text-align:right">${x[1].qty.toLocaleString()}</td>
+      <td style="text-align:right;white-space:nowrap;font-family:var(--font-mono);font-size:12px">${fmtWon(x[1].sales)}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" class="empty-state">데이터 없음</td></tr>';
+
+  // ── 테이블 B: 라이선스별 상세 ───────────────────────
+  document.getElementById('toppsLicTable').innerHTML = licSorted.length ? licSorted.map(x=>{
+    const lic = x[0];
+    return `<tr>
+      <td>${lic}</td>
+      <td style="text-align:right">${(licItems[lic]?.size||0)}종</td>
+      <td style="text-align:right">${(licQty[lic]||0).toLocaleString()}</td>
+      <td style="text-align:right;white-space:nowrap">${fmtWon(x[1])}</td>
+      <td style="text-align:right">${toppsSales>0?(x[1]/toppsSales*100).toFixed(1)+'%':'—'}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="5" class="empty-state">데이터 없음</td></tr>';
+
+  // ── 테이블 C: 채널 × 라이선스 매트릭스 ─────────────
+  const matrixChKeys = ['btob','offline_store','wise_broadcast','payapp','cafe'];
+  const matrixChLabels = { btob:'B2B', offline_store:'오프라인 매장', wise_broadcast:'와이스 방송', payapp:'페이앱', cafe:'카페' };
+
+  // 매트릭스 데이터 구성
+  const matrix = {}; // matrix[lic][ch] = sales
+  ext.forEach(r => {
+    const m   = toppsMap[r.item];
+    if (!(m && parseBool(m.is_topps))) return;
+    const lic = (m.license_category) || '미분류';
+    const ch  = r.sales_channel || '기타';
+    const amt = parseNum(r.sales_amount);
+    if (!matrix[lic]) matrix[lic] = {};
+    matrix[lic][ch] = (matrix[lic][ch]||0) + amt;
+  });
+
+  // 실제 등장한 채널 중 matrixChKeys 순서로 정렬, 나머지는 '기타'로 묶기
+  const allChs = new Set();
+  Object.values(matrix).forEach(row => Object.keys(row).forEach(ch => allChs.add(ch)));
+  const orderedChs = matrixChKeys.filter(ch => allChs.has(ch));
+  const otherChs   = [...allChs].filter(ch => !matrixChKeys.includes(ch));
+  if (otherChs.length > 0) orderedChs.push('__other__');
+
+  // 헤더
+  const headCols = orderedChs.map(ch => ch === '__other__' ? '기타' : (matrixChLabels[ch]||ch));
+  document.getElementById('toppsMatrixHead').innerHTML = `<tr>
+    <th>라이선스</th>
+    ${headCols.map(h=>`<th style="text-align:right">${h}</th>`).join('')}
+    <th style="text-align:right" class="col-total">합계</th>
+  </tr>`;
+
+  // 행: 라이선스 합계 기준 정렬
+  const licTotals = {};
+  Object.entries(matrix).forEach(([lic, row]) => {
+    licTotals[lic] = Object.values(row).reduce((s,v)=>s+v,0);
+  });
+  const sortedLics = Object.keys(licTotals).sort((a,b)=>licTotals[b]-licTotals[a]);
+
+  document.getElementById('toppsMatrixBody').innerHTML = sortedLics.map(lic => {
+    const row  = matrix[lic] || {};
+    let rowTotal = 0;
+    const cells = orderedChs.map(ch => {
+      let val = 0;
+      if (ch === '__other__') {
+        otherChs.forEach(oc => { val += row[oc]||0; });
+      } else {
+        val = row[ch]||0;
+      }
+      rowTotal += val;
+      return val > 0
+        ? `<td style="text-align:right;white-space:nowrap">${fmtWon(val)}</td>`
+        : `<td style="text-align:right;color:var(--text-sub)">—</td>`;
+    });
+    return `<tr>
+      <td><strong>${lic}</strong></td>
+      ${cells.join('')}
+      <td class="col-total" style="text-align:right">${fmtWon(rowTotal)}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" class="empty-state">데이터 없음</td></tr>';
 }
 </script>
 
